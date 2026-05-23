@@ -23,11 +23,11 @@ typedef struct {
     float DiemTrungBinhTichLuy;
 } HocVien;
 
- void XoaManHinh(void) {
+void XoaManHinh(void) {
     system("cls");
 }
 
- void InTieuDe(const char* TieuDe) {
+void InTieuDe(const char* TieuDe) {
     XoaManHinh();
     printf("========================================\n");
     printf(" CHUONG TRINH QUAN LY HOC VIEN - TUAN 2\n");
@@ -38,7 +38,7 @@ typedef struct {
     printf("----------------------------------------\n");
 }
 
- void ChoPhimEscQuayLai(void) {
+void ChoPhimEscQuayLai(void) {
     int Phim;
 
     printf("\nNhan ESC de quay lai...");
@@ -47,11 +47,11 @@ typedef struct {
     } while (Phim != 27);
 }
 
- void SaoChepChuoi(char* ChuoiDich, size_t KichThuocChuoiDich, const char* ChuoiNguon) {
+void SaoChepChuoi(char* ChuoiDich, size_t KichThuocChuoiDich, const char* ChuoiNguon) {
     strncpy_s(ChuoiDich, KichThuocChuoiDich, ChuoiNguon, _TRUNCATE);
 }
 
- int NhapDongCoEsc(const char* Nhan, char* BoDem, int KichThuoc) {
+int NhapDongCoEsc(const char* Nhan, char* BoDem, int KichThuoc) {
     int DoDai = 0;
 
     BoDem[0] = '\0';
@@ -87,7 +87,7 @@ typedef struct {
     }
 }
 
- int NhapHoTenChuanHoa(const char* Nhan, char* BoDem, int KichThuoc) {
+int NhapHoTenChuanHoa(const char* Nhan, char* BoDem, int KichThuoc) {
     int DoDai = 0;
 
     BoDem[0] = '\0';
@@ -130,7 +130,7 @@ typedef struct {
 
         if (isalpha((unsigned char)Phim) && DoDai < KichThuoc - 1) {
 
-            bool CanVietHoa = false ;
+            bool CanVietHoa = false;
             if (DoDai == 0 || BoDem[DoDai - 1] == ' ') CanVietHoa = true;
             char KyTu;
             if (CanVietHoa == false) KyTu = (char)tolower(Phim);
@@ -139,9 +139,9 @@ typedef struct {
             printf("%c", KyTu);
         }
     }
-} 
+}
 
- int LaNamNhuan(int Nam) {
+int LaNamNhuan(int Nam) {
     if (Nam % 400 == 0) {
         return 1;
     }
@@ -151,15 +151,15 @@ typedef struct {
     return Nam % 4 == 0;
 }
 
- int KiemTraNgaySinhHopLe(Date NgaySinh) {
+int KiemTraNgaySinhHopLe(Date NgaySinh) {
     int SoNgayTrongThang[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     if (LaNamNhuan(NgaySinh.Nam)) {
         SoNgayTrongThang[1] = 29;
     }
 
-    if (NgaySinh.Thang>0 && NgaySinh.Thang<=12)
-    { 
+    if (NgaySinh.Thang > 0 && NgaySinh.Thang <= 12)
+    {
         if (NgaySinh.Ngay > 0 && NgaySinh.Ngay <= SoNgayTrongThang[NgaySinh.Thang - 1])
         {
             if (NgaySinh.Nam < 2008)
@@ -171,11 +171,11 @@ typedef struct {
     return 0;
 }
 
- void InNgaySinh(Date NgaySinh) {
+void InNgaySinh(Date NgaySinh) {
     printf("%02d/%02d/%04d", NgaySinh.Ngay, NgaySinh.Thang, NgaySinh.Nam);
 }
 
- int ChuyenChuoiThanhSoNguyen(const char* Chuoi, int* GiaTri) {
+int ChuyenChuoiThanhSoNguyen(const char* Chuoi, int* GiaTri) {
     char KyTuThua;
 
     if (sscanf_s(Chuoi, "%d%c", GiaTri, &KyTuThua, 1) != 1) {
@@ -185,7 +185,7 @@ typedef struct {
     return 1;
 }
 
- int NhapSoNguyenCoEsc(const char* Nhan, int* GiaTri) {
+int NhapSoNguyenCoEsc(const char* Nhan, int* GiaTri) {
     char Chuoi[20];
 
     while (1) {
@@ -201,7 +201,7 @@ typedef struct {
     }
 }
 
- int NhapNgaySinhHopLe(Date* NgaySinh) {
+int NhapNgaySinhHopLe(Date* NgaySinh) {
     while (1) {
         printf("Nhap ngay sinh: \n");
 
@@ -237,7 +237,7 @@ typedef struct {
     }
 }
 
- int KiemTraMaHocVienHopLe(const char* MaHocVien) {
+int KiemTraMaHocVienHopLe(const char* MaHocVien) {
     int SoThuTu;
 
     if (strlen(MaHocVien) != 7) {
@@ -258,7 +258,7 @@ typedef struct {
     return SoThuTu >= 1 && SoThuTu <= 999;
 }
 
- int KiemTraTrungMaHocVien(HocVien DanhSachHocVien[], int SoLuongHocVien, const char* MaHocVien) {
+int KiemTraTrungMaHocVien(HocVien DanhSachHocVien[], int SoLuongHocVien, const char* MaHocVien) {
     int ViTri;
 
     for (ViTri = 0; ViTri < SoLuongHocVien; ViTri++) {
@@ -270,7 +270,7 @@ typedef struct {
     return 0;
 }
 
- int NhapMaHocVienHopLe(char* MaHocVien, int KichThuoc, HocVien DanhSachHocVien[], int SoLuongHocVien) {
+int NhapMaHocVienHopLe(char* MaHocVien, int KichThuoc, HocVien DanhSachHocVien[], int SoLuongHocVien) {
     while (1) {
         if (!NhapDongCoEsc("Ma hoc vien (2024001-2024999): ", MaHocVien, KichThuoc)) {
             return 0;
@@ -290,7 +290,7 @@ typedef struct {
     }
 }
 
- int KiemTraDiemHopLe(const char* ChuoiDiem, float* Diem) {
+int KiemTraDiemHopLe(const char* ChuoiDiem, float* Diem) {
     char KyTuThua;
 
     if (sscanf_s(ChuoiDiem, "%f%c", Diem, &KyTuThua, 1) != 1) {
@@ -300,7 +300,7 @@ typedef struct {
     return *Diem >= 0.0f && *Diem <= 4.0f;
 }
 
- int NhapDiemHopLe(float* Diem) {
+int NhapDiemHopLe(float* Diem) {
     char ChuoiDiem[20];
 
     while (1) {
@@ -316,7 +316,7 @@ typedef struct {
     }
 }
 
- void InMotHocVien(HocVien ThongTinHocVien, int SoThuTu) {
+void InMotHocVien(HocVien ThongTinHocVien, int SoThuTu) {
     printf("%-5d %-10s %-12s %-28s %02d/%02d/%04d   %.2f\n",
         SoThuTu,
         ThongTinHocVien.MaLop,
@@ -328,7 +328,7 @@ typedef struct {
         ThongTinHocVien.DiemTrungBinhTichLuy);
 }
 
- void InBangHocVien(HocVien DanhSachHocVien[], int SoLuongHocVien) {
+void InBangHocVien(HocVien DanhSachHocVien[], int SoLuongHocVien) {
     int ViTri;
 
     if (SoLuongHocVien == 0) {
@@ -343,7 +343,7 @@ typedef struct {
     }
 }
 
- int DocDanhSachTuFile(const char* TenTep, HocVien DanhSachHocVien[], int SoLuongToiDa) {
+int DocDanhSachTuFile(const char* TenTep, HocVien DanhSachHocVien[], int SoLuongToiDa) {
     FILE* Tep;
     int SoLuongDocDuoc;
 
@@ -362,7 +362,7 @@ typedef struct {
     return SoLuongDocDuoc;
 }
 
- int GhiDanhSachVaoFile(const char* TenTep, HocVien DanhSachHocVien[], int SoLuongHocVien) {
+int GhiDanhSachVaoFile(const char* TenTep, HocVien DanhSachHocVien[], int SoLuongHocVien) {
     FILE* Tep;
     int SoLuongGhiDuoc;
 
@@ -377,7 +377,7 @@ typedef struct {
     return SoLuongGhiDuoc == SoLuongHocVien;
 }
 
- int XacNhanThemHocVien(void) {
+int XacNhanThemHocVien(void) {
     int Phim;
 
     printf("\nThem moi hoc vien nay?");
@@ -394,7 +394,7 @@ typedef struct {
     }
 }
 
- void XuLyThemHoSo(const char* TenTep) {
+void XuLyThemHoSo(const char* TenTep) {
     HocVien DanhSachHocVien[SoLuongHocVienToiDa];
     HocVien HocVienTam = { "", "", "", { 0, 0, 0 }, 0 };
     int SoLuongHocVien;
@@ -458,7 +458,7 @@ typedef struct {
     ChoPhimEscQuayLai();
 }
 
- void XuLyMenuInDanhSach(const char* TenTep) {
+void XuLyMenuInDanhSach(const char* TenTep) {
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien;
@@ -515,13 +515,193 @@ typedef struct {
     }
 }
 
- void XuLyMenuSapXep(const char* TenTep) {
+// ============================================================
+// TUAN 3: CAC HAM SO SANH & SAP XEP
+// ============================================================
+
+int SoSanhTheoMaHocVien(HocVien A, HocVien B) {
+    return strcmp(A.MaHocVien, B.MaHocVien) < 0;
+}
+
+int SoSanhTheoHoTen(HocVien A, HocVien B) {
+    return strcmp(A.HoTen, B.HoTen) < 0;
+}
+
+int SoSanhTheoNgaySinh(HocVien A, HocVien B) {
+    if (A.NgaySinh.Nam != B.NgaySinh.Nam)
+        return A.NgaySinh.Nam < B.NgaySinh.Nam;
+    if (A.NgaySinh.Thang != B.NgaySinh.Thang)
+        return A.NgaySinh.Thang < B.NgaySinh.Thang;
+    return A.NgaySinh.Ngay < B.NgaySinh.Ngay;
+}
+
+int SoSanhTheoDiemTrungBinhTichLuy(HocVien A, HocVien B) {
+    return A.DiemTrungBinhTichLuy < B.DiemTrungBinhTichLuy;
+}
+
+int SoSanhHocVien(HocVien A, HocVien B, int Khoa) {
+    switch (Khoa) {
+    case '1': return SoSanhTheoMaHocVien(A, B);
+    case '2': return SoSanhTheoHoTen(A, B);
+    case '3': return SoSanhTheoNgaySinh(A, B);
+    case '4': return SoSanhTheoDiemTrungBinhTichLuy(A, B);
+    }
+    return 0;
+}
+
+void HoanDoiHocVien(HocVien* A, HocVien* B) {
+    HocVien Tam = *A;
+    *A = *B;
+    *B = Tam;
+}
+
+// Thuat toan 1: Sap xep chon (Selection Sort)
+void SapXepChon(HocVien DanhSach[], int SoLuong, int Khoa) {
+    int i, j, ViTriNhoNhat;
+
+    for (i = 0; i < SoLuong - 1; i++) {
+        ViTriNhoNhat = i;
+        for (j = i + 1; j < SoLuong; j++) {
+            if (SoSanhHocVien(DanhSach[j], DanhSach[ViTriNhoNhat], Khoa)) {
+                ViTriNhoNhat = j;
+            }
+        }
+        if (ViTriNhoNhat != i) {
+            HoanDoiHocVien(&DanhSach[i], &DanhSach[ViTriNhoNhat]);
+        }
+    }
+}
+
+// Thuat toan 2: Sap xep chen (Insertion Sort)
+void SapXepChen(HocVien DanhSach[], int SoLuong, int Khoa) {
+    int i, j;
+    HocVien KhoaTam;
+
+    for (i = 1; i < SoLuong; i++) {
+        KhoaTam = DanhSach[i];
+        j = i - 1;
+        while (j >= 0 && SoSanhHocVien(KhoaTam, DanhSach[j], Khoa)) {
+            DanhSach[j + 1] = DanhSach[j];
+            j--;
+        }
+        DanhSach[j + 1] = KhoaTam;
+    }
+}
+
+// Thuat toan 3: Quicksort
+int PhanHoach(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
+    HocVien Chot = DanhSach[Phai];
+    int i = Trai - 1;
+    int j;
+
+    for (j = Trai; j < Phai; j++) {
+        if (SoSanhHocVien(DanhSach[j], Chot, Khoa)) {
+            i++;
+            HoanDoiHocVien(&DanhSach[i], &DanhSach[j]);
+        }
+    }
+    HoanDoiHocVien(&DanhSach[i + 1], &DanhSach[Phai]);
+    return i + 1;
+}
+
+void SapXepNhanh(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
+    if (Trai < Phai) {
+        int ViTriChot = PhanHoach(DanhSach, Trai, Phai, Khoa);
+        SapXepNhanh(DanhSach, Trai, ViTriChot - 1, Khoa);
+        SapXepNhanh(DanhSach, ViTriChot + 1, Phai, Khoa);
+    }
+}
+
+// Thuat toan 4: Mergesort
+void Tron(HocVien DanhSach[], int Trai, int Giua, int Phai, int Khoa) {
+    int i, j, k;
+    int KichThuocTrai = Giua - Trai + 1;
+    int KichThuocPhai = Phai - Giua;
+
+    HocVien* MangTrai = (HocVien*)malloc(KichThuocTrai * sizeof(HocVien));
+    HocVien* MangPhai = (HocVien*)malloc(KichThuocPhai * sizeof(HocVien));
+
+    if (MangTrai == NULL || MangPhai == NULL) {
+        if (MangTrai) free(MangTrai);
+        if (MangPhai) free(MangPhai);
+        return;
+    }
+
+    for (i = 0; i < KichThuocTrai; i++)
+        MangTrai[i] = DanhSach[Trai + i];
+    for (j = 0; j < KichThuocPhai; j++)
+        MangPhai[j] = DanhSach[Giua + 1 + j];
+
+    i = 0; j = 0; k = Trai;
+    while (i < KichThuocTrai && j < KichThuocPhai) {
+        if (SoSanhHocVien(MangTrai[i], MangPhai[j], Khoa)) {
+            DanhSach[k] = MangTrai[i];
+            i++;
+        }
+        else {
+            DanhSach[k] = MangPhai[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < KichThuocTrai) {
+        DanhSach[k] = MangTrai[i];
+        i++; k++;
+    }
+
+    while (j < KichThuocPhai) {
+        DanhSach[k] = MangPhai[j];
+        j++; k++;
+    }
+
+    free(MangTrai);
+    free(MangPhai);
+}
+
+void SapXepTron(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
+    if (Trai < Phai) {
+        int Giua = Trai + (Phai - Trai) / 2;
+        SapXepTron(DanhSach, Trai, Giua, Khoa);
+        SapXepTron(DanhSach, Giua + 1, Phai, Khoa);
+        Tron(DanhSach, Trai, Giua, Phai, Khoa);
+    }
+}
+
+const char* LayTenThuatToan(int ThuatToan) {
+    switch (ThuatToan) {
+    case '1': return "Sap xep chon (Selection Sort)";
+    case '2': return "Sap xep chen (Insertion Sort)";
+    case '3': return "Quicksort";
+    case '4': return "Mergesort";
+    }
+    return "";
+}
+
+const char* LayTenKhoa(int Khoa) {
+    switch (Khoa) {
+    case '1': return "Ma hoc vien";
+    case '2': return "Ho va ten";
+    case '3': return "Ngay sinh";
+    case '4': return "Diem trung binh tich luy";
+    }
+    return "";
+}
+
+void XuLyMenuSapXep(const char* TenTep) {
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien;
         int ThuatToan;
 
         SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
+
+        if (SoLuongHocVien == 0) {
+            InTieuDe("M3. SAP XEP");
+            printf("Danh sach hoc vien dang rong, khong co gi de sap xep.\n");
+            ChoPhimEscQuayLai();
+            return;
+        }
 
         InTieuDe("M3. SAP XEP");
         printf("So hoc vien hien co trong file: %d\n\n", SoLuongHocVien);
@@ -540,7 +720,7 @@ typedef struct {
             int Khoa;
 
             InTieuDe("M3. SAP XEP - CHON KHOA");
-            printf("Thuat toan da chon: %c\n\n", ThuatToan);
+            printf("Thuat toan da chon: %s\n\n", LayTenThuatToan(ThuatToan));
             printf("1. Ma hoc vien\n");
             printf("2. Ho va ten\n");
             printf("3. Ngay sinh\n");
@@ -552,17 +732,56 @@ typedef struct {
             }
 
             if (Khoa >= '1' && Khoa <= '4') {
-                InTieuDe("M3. SAP XEP");
-                printf("Da chon thuat toan %c va khoa %c.\n", ThuatToan, Khoa);
-                printf("So hoc vien hien co trong file: %d\n", SoLuongHocVien);
-                printf("Chuc nang sap xep se hoan thien o tuan 3.\n");
+                InTieuDe("M3. SAP XEP - KET QUA");
+                printf("Thuat toan: %s\n", LayTenThuatToan(ThuatToan));
+                printf("Khoa sap xep: %s\n", LayTenKhoa(Khoa));
+                printf("So hoc vien: %d\n\n", SoLuongHocVien);
+
+                switch (ThuatToan) {
+                case '1':
+                    SapXepChon(DanhSachHocVien, SoLuongHocVien, Khoa);
+                    break;
+                case '2':
+                    SapXepChen(DanhSachHocVien, SoLuongHocVien, Khoa);
+                    break;
+                case '3':
+                    SapXepNhanh(DanhSachHocVien, 0, SoLuongHocVien - 1, Khoa);
+                    break;
+                case '4':
+                    SapXepTron(DanhSachHocVien, 0, SoLuongHocVien - 1, Khoa);
+                    break;
+                }
+
+                printf("Da sap xep xong!\n\n");
+                InBangHocVien(DanhSachHocVien, SoLuongHocVien);
+
+                printf("\nBan co muon luu ket qua sap xep vao file khong?\n");
+                printf("Nhan ENTER de luu, ESC de bo qua.\n");
+
+                while (1) {
+                    int Phim = _getch();
+                    if (Phim == 13) {
+                        if (GhiDanhSachVaoFile(TenTep, DanhSachHocVien, SoLuongHocVien)) {
+                            printf("\nDa luu danh sach da sap xep vao file %s.\n", TenTep);
+                        }
+                        else {
+                            printf("\nLoi: Khong ghi duoc file.\n");
+                        }
+                        break;
+                    }
+                    if (Phim == 27) {
+                        printf("\nKhong luu thay doi.\n");
+                        break;
+                    }
+                }
+
                 ChoPhimEscQuayLai();
             }
         }
     }
 }
 
- void XuLyMenuTimKiem(const char* TenTep) {
+void XuLyMenuTimKiem(const char* TenTep) {
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien;
@@ -617,7 +836,7 @@ typedef struct {
     }
 }
 
- void XuLyMenuThongKe(const char* TenTep) {
+void XuLyMenuThongKe(const char* TenTep) {
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien;
