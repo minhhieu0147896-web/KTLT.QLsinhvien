@@ -13,7 +13,7 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedHeight": 217,
+          "DockedHeight": 255,
           "SelectedChildIndex": 2,
           "Children": [
             {
@@ -32,7 +32,7 @@
               "RelativeDocumentMoniker": "Source.cpp",
               "ToolTip": "E:\\lung tung\\KTLT.QLsinhvien\\SV\\Source.cpp",
               "RelativeToolTip": "Source.cpp",
-              "ViewState": "AgIAAIECAAAAAAAAAAApwJkCAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAAIICAAAAAAAAAAAAAJkCAAAlAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2026-05-15T16:13:10.885Z",
               "EditorCaption": ""
@@ -40,7 +40,7 @@
           ]
         },
         {
-          "DockedHeight": 76,
+          "DockedHeight": 38,
           "SelectedChildIndex": -1,
           "Children": [
             {

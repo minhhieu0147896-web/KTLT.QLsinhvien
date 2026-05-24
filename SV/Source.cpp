@@ -23,10 +23,12 @@ typedef struct {
     float DiemTrungBinhTichLuy;
 } HocVien;
 
+// Xóa màn hình console
 void XoaManHinh(void) {
     system("cls");
 }
 
+// In tiêu đề màn hình kèm số tuần
 void InTieuDe(const char* TieuDe) {
     XoaManHinh();
     printf("========================================\n");
@@ -38,6 +40,7 @@ void InTieuDe(const char* TieuDe) {
     printf("----------------------------------------\n");
 }
 
+// Đợi người dùng nhấn ESC để quay lại menu trước
 void ChoPhimEscQuayLai(void) {
     int Phim;
 
@@ -47,10 +50,12 @@ void ChoPhimEscQuayLai(void) {
     } while (Phim != 27);
 }
 
+// Sao chép chuỗi an toàn (dùng strncpy_s)
 void SaoChepChuoi(char* ChuoiDich, size_t KichThuocChuoiDich, const char* ChuoiNguon) {
     strncpy_s(ChuoiDich, KichThuocChuoiDich, ChuoiNguon, _TRUNCATE);
 }
 
+// Nhập chuỗi ký tự, hỗ trợ Backspace và ESC để hủy bỏ
 int NhapDongCoEsc(const char* Nhan, char* BoDem, int KichThuoc) {
     int DoDai = 0;
 
@@ -87,6 +92,7 @@ int NhapDongCoEsc(const char* Nhan, char* BoDem, int KichThuoc) {
     }
 }
 
+// Nhập họ tên và tự động chuẩn hóa: viết hoa chữ cái đầu mỗi từ, còn lại viết thường
 int NhapHoTenChuanHoa(const char* Nhan, char* BoDem, int KichThuoc) {
     int DoDai = 0;
 
@@ -141,6 +147,7 @@ int NhapHoTenChuanHoa(const char* Nhan, char* BoDem, int KichThuoc) {
     }
 }
 
+// Kiểm tra năm nhuận: trả về 1 nếu năm nhuận, 0 nếu không
 int LaNamNhuan(int Nam) {
     if (Nam % 400 == 0) {
         return 1;
@@ -151,6 +158,7 @@ int LaNamNhuan(int Nam) {
     return Nam % 4 == 0;
 }
 
+// Kiểm tra ngày sinh hợp lệ (ngày/tháng/năm đúng và năm < 2008)
 int KiemTraNgaySinhHopLe(Date NgaySinh) {
     int SoNgayTrongThang[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
@@ -171,10 +179,12 @@ int KiemTraNgaySinhHopLe(Date NgaySinh) {
     return 0;
 }
 
+// In ngày sinh theo định dạng dd/mm/yyyy
 void InNgaySinh(Date NgaySinh) {
     printf("%02d/%02d/%04d", NgaySinh.Ngay, NgaySinh.Thang, NgaySinh.Nam);
 }
 
+// Chuyển chuỗi sang số nguyên, trả về 0 nếu thất bại
 int ChuyenChuoiThanhSoNguyen(const char* Chuoi, int* GiaTri) {
     char KyTuThua;
 
@@ -185,6 +195,7 @@ int ChuyenChuoiThanhSoNguyen(const char* Chuoi, int* GiaTri) {
     return 1;
 }
 
+// Nhập số nguyên, lặp đến khi nhập đúng hoặc bấm ESC
 int NhapSoNguyenCoEsc(const char* Nhan, int* GiaTri) {
     char Chuoi[20];
 
@@ -201,6 +212,7 @@ int NhapSoNguyenCoEsc(const char* Nhan, int* GiaTri) {
     }
 }
 
+// Nhập ngày sinh và kiểm tra hợp lệ (gồm kiểm tra rời rạc + kiểm tra tổng thể)
 int NhapNgaySinhHopLe(Date* NgaySinh) {
     while (1) {
         printf("Nhap ngay sinh: \n");
@@ -237,6 +249,7 @@ int NhapNgaySinhHopLe(Date* NgaySinh) {
     }
 }
 
+// Kiểm tra mã HV có đúng định dạng: 2024xxx (7 ký tự, xxx từ 001-999)
 int KiemTraMaHocVienHopLe(const char* MaHocVien) {
     int SoThuTu;
 
@@ -258,6 +271,7 @@ int KiemTraMaHocVienHopLe(const char* MaHocVien) {
     return SoThuTu >= 1 && SoThuTu <= 999;
 }
 
+// Kiểm tra mã HV có bị trùng trong danh sách hay không
 int KiemTraTrungMaHocVien(HocVien DanhSachHocVien[], int SoLuongHocVien, const char* MaHocVien) {
     int ViTri;
 
@@ -270,6 +284,7 @@ int KiemTraTrungMaHocVien(HocVien DanhSachHocVien[], int SoLuongHocVien, const c
     return 0;
 }
 
+// Nhập mã HV, kiểm tra hợp lệ + không trùng, cho phép ESC hủy
 int NhapMaHocVienHopLe(char* MaHocVien, int KichThuoc, HocVien DanhSachHocVien[], int SoLuongHocVien) {
     while (1) {
         if (!NhapDongCoEsc("Ma hoc vien (2024001-2024999): ", MaHocVien, KichThuoc)) {
@@ -290,6 +305,7 @@ int NhapMaHocVienHopLe(char* MaHocVien, int KichThuoc, HocVien DanhSachHocVien[]
     }
 }
 
+// Kiểm tra chuỗi điểm có hợp lệ không (số thực trong khoảng 0.0 - 4.0)
 int KiemTraDiemHopLe(const char* ChuoiDiem, float* Diem) {
     char KyTuThua;
 
@@ -300,6 +316,7 @@ int KiemTraDiemHopLe(const char* ChuoiDiem, float* Diem) {
     return *Diem >= 0.0f && *Diem <= 4.0f;
 }
 
+// Nhập điểm TBTL, lặp đến khi nhập đúng (0.0 - 4.0) hoặc ESC
 int NhapDiemHopLe(float* Diem) {
     char ChuoiDiem[20];
 
@@ -316,6 +333,7 @@ int NhapDiemHopLe(float* Diem) {
     }
 }
 
+// In 1 dòng thông tin học viên theo định dạng bảng
 void InMotHocVien(HocVien ThongTinHocVien, int SoThuTu) {
     printf("%-5d %-10s %-12s %-28s %02d/%02d/%04d   %.2f\n",
         SoThuTu,
@@ -328,6 +346,7 @@ void InMotHocVien(HocVien ThongTinHocVien, int SoThuTu) {
         ThongTinHocVien.DiemTrungBinhTichLuy);
 }
 
+// In toàn bộ danh sách học viên dạng bảng có tiêu đề cột
 void InBangHocVien(HocVien DanhSachHocVien[], int SoLuongHocVien) {
     int ViTri;
 
@@ -343,6 +362,7 @@ void InBangHocVien(HocVien DanhSachHocVien[], int SoLuongHocVien) {
     }
 }
 
+// Đọc danh sách học viên từ file nhị phân, trả về số lượng đọc được
 int DocDanhSachTuFile(const char* TenTep, HocVien DanhSachHocVien[], int SoLuongToiDa) {
     FILE* Tep;
     int SoLuongDocDuoc;
@@ -362,6 +382,7 @@ int DocDanhSachTuFile(const char* TenTep, HocVien DanhSachHocVien[], int SoLuong
     return SoLuongDocDuoc;
 }
 
+// Ghi danh sách học viên vào file nhị phân, trả về 1 nếu thành công
 int GhiDanhSachVaoFile(const char* TenTep, HocVien DanhSachHocVien[], int SoLuongHocVien) {
     FILE* Tep;
     int SoLuongGhiDuoc;
@@ -377,6 +398,7 @@ int GhiDanhSachVaoFile(const char* TenTep, HocVien DanhSachHocVien[], int SoLuon
     return SoLuongGhiDuoc == SoLuongHocVien;
 }
 
+// Xác nhận lưu học viên: ENTER để lưu, ESC để hủy
 int XacNhanThemHocVien(void) {
     int Phim;
 
@@ -394,6 +416,7 @@ int XacNhanThemHocVien(void) {
     }
 }
 
+// M1: Xử lý thêm mới hồ sơ học viên (nhập → xác nhận → lưu file)
 void XuLyThemHoSo(const char* TenTep) {
     HocVien DanhSachHocVien[SoLuongHocVienToiDa];
     HocVien HocVienTam = { "", "", "", { 0, 0, 0 }, 0 };
@@ -458,6 +481,7 @@ void XuLyThemHoSo(const char* TenTep) {
     ChoPhimEscQuayLai();
 }
 
+// M2: Xử lý menu in danh sách (toàn bộ / theo lớp / theo kết quả sắp xếp)
 void XuLyMenuInDanhSach(const char* TenTep) {
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
@@ -519,14 +543,17 @@ void XuLyMenuInDanhSach(const char* TenTep) {
 // TUAN 3: CAC HAM SO SANH & SAP XEP
 // ============================================================
 
+// So sánh 2 học viên theo mã học viên (tăng dần)
 int SoSanhTheoMaHocVien(HocVien A, HocVien B) {
     return strcmp(A.MaHocVien, B.MaHocVien) < 0;
 }
 
+// So sánh 2 học viên theo họ tên (tăng dần theo bảng chữ cái)
 int SoSanhTheoHoTen(HocVien A, HocVien B) {
     return strcmp(A.HoTen, B.HoTen) < 0;
 }
 
+// So sánh 2 học viên theo ngày sinh (tăng dần: cũ hơn → trẻ hơn)
 int SoSanhTheoNgaySinh(HocVien A, HocVien B) {
     if (A.NgaySinh.Nam != B.NgaySinh.Nam)
         return A.NgaySinh.Nam < B.NgaySinh.Nam;
@@ -535,10 +562,12 @@ int SoSanhTheoNgaySinh(HocVien A, HocVien B) {
     return A.NgaySinh.Ngay < B.NgaySinh.Ngay;
 }
 
+// So sánh 2 học viên theo điểm trung bình tích lũy (tăng dần)
 int SoSanhTheoDiemTrungBinhTichLuy(HocVien A, HocVien B) {
     return A.DiemTrungBinhTichLuy < B.DiemTrungBinhTichLuy;
 }
 
+// So sánh 2 học viên theo khóa được chọn (1=mã, 2=tên, 3=ngày sinh, 4=điểm)
 int SoSanhHocVien(HocVien A, HocVien B, int Khoa) {
     switch (Khoa) {
     case '1': return SoSanhTheoMaHocVien(A, B);
@@ -549,13 +578,14 @@ int SoSanhHocVien(HocVien A, HocVien B, int Khoa) {
     return 0;
 }
 
+// Hoán đổi vị trí 2 học viên trong mảng
 void HoanDoiHocVien(HocVien* A, HocVien* B) {
     HocVien Tam = *A;
     *A = *B;
     *B = Tam;
 }
 
-// Thuat toan 1: Sap xep chon (Selection Sort)
+// Thuật toán sắp xếp chọn: mỗi vòng tìm min trong đoạn chưa sắp xếp rồi đưa về đầu
 void SapXepChon(HocVien DanhSach[], int SoLuong, int Khoa) {
     int i, j, ViTriNhoNhat;
 
@@ -572,7 +602,7 @@ void SapXepChon(HocVien DanhSach[], int SoLuong, int Khoa) {
     }
 }
 
-// Thuat toan 2: Sap xep chen (Insertion Sort)
+// Thuật toán sắp xếp chèn: rút từng phần tử rồi chèn vào đúng vị trí trong phần đã sắp
 void SapXepChen(HocVien DanhSach[], int SoLuong, int Khoa) {
     int i, j;
     HocVien KhoaTam;
@@ -588,7 +618,7 @@ void SapXepChen(HocVien DanhSach[], int SoLuong, int Khoa) {
     }
 }
 
-// Thuat toan 3: Quicksort
+// Phân hoạch Lomuto cho Quicksort: đưa phần tử nhỏ hơn chốt sang trái, lớn hơn sang phải
 int PhanHoach(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
     HocVien Chot = DanhSach[Phai];
     int i = Trai - 1;
@@ -604,6 +634,7 @@ int PhanHoach(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
     return i + 1;
 }
 
+// Thuật toán Quicksort: chọn chốt → phân hoạch → đệ quy 2 nửa trái & phải
 void SapXepNhanh(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
     if (Trai < Phai) {
         int ViTriChot = PhanHoach(DanhSach, Trai, Phai, Khoa);
@@ -612,7 +643,7 @@ void SapXepNhanh(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
     }
 }
 
-// Thuat toan 4: Mergesort
+// Trộn 2 mảng con đã sắp xếp thành 1 mảng có thứ tự
 void Tron(HocVien DanhSach[], int Trai, int Giua, int Phai, int Khoa) {
     int i, j, k;
     int KichThuocTrai = Giua - Trai + 1;
@@ -659,6 +690,7 @@ void Tron(HocVien DanhSach[], int Trai, int Giua, int Phai, int Khoa) {
     free(MangPhai);
 }
 
+// Thuật toán Mergesort: chia đôi mảng → đệ quy → trộn 2 nửa đã sắp
 void SapXepTron(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
     if (Trai < Phai) {
         int Giua = Trai + (Phai - Trai) / 2;
@@ -668,6 +700,7 @@ void SapXepTron(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
     }
 }
 
+// Trả về tên hiển thị của thuật toán sắp xếp theo mã chọn
 const char* LayTenThuatToan(int ThuatToan) {
     switch (ThuatToan) {
     case '1': return "Sap xep chon (Selection Sort)";
@@ -678,6 +711,7 @@ const char* LayTenThuatToan(int ThuatToan) {
     return "";
 }
 
+// Trả về tên hiển thị của khóa sắp xếp theo mã chọn
 const char* LayTenKhoa(int Khoa) {
     switch (Khoa) {
     case '1': return "Ma hoc vien";
@@ -688,6 +722,7 @@ const char* LayTenKhoa(int Khoa) {
     return "";
 }
 
+// M3: Xử lý menu sắp xếp (chọn thuật toán → chọn khóa → sắp xếp → hỏi lưu)
 void XuLyMenuSapXep(const char* TenTep) {
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
@@ -781,6 +816,7 @@ void XuLyMenuSapXep(const char* TenTep) {
     }
 }
 
+// M4: Xử lý menu tìm kiếm (chọn thuật toán → chọn khóa → nhập giá trị tìm)
 void XuLyMenuTimKiem(const char* TenTep) {
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
@@ -836,6 +872,7 @@ void XuLyMenuTimKiem(const char* TenTep) {
     }
 }
 
+// M5: Xử lý menu thống kê (số lượng theo lớp / tỷ lệ xếp loại)
 void XuLyMenuThongKe(const char* TenTep) {
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
@@ -864,6 +901,7 @@ void XuLyMenuThongKe(const char* TenTep) {
     }
 }
 
+// Hàm chính: hiển thị menu chính và điều phối các chức năng
 int main(void) {
     int DangChay = 1;
     const char* TenTepNhiPhan = "HocVien.dat";
