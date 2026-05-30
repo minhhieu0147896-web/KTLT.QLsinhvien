@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(msbuild *)",
+      "Bash(where *)",
+      "Bash(dir *)",
+      "Bash(\"c:\\program files\\microsoft visual studio\\2022\\community\\msbuild\\current\\bin\\msbuild.exe\" *)",
+      "Bash(call *)"
+    ]
+  },
+  "$version": 4
+}

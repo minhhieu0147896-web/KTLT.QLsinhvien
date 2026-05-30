@@ -3,6 +3,62 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
+
+// ============================================================
+// CAC HANG SO MAU SAC
+// ============================================================
+#define MAU_MAC_DINH      7    // Trang tren den
+#define MAU_TIEU_DE       14   // Vang tren den
+#define MAU_VIEN           3   // Xanh cyan tren den
+#define MAU_DONG_CHON     112  // Den tren trang (dao nguoc)
+#define MAU_THANH_CONG    10   // Xanh la tren den
+#define MAU_LOI            4   // Do tren den
+
+// ============================================================
+// CAC HAM TIEN ICH MAU SAC & CON TRO
+// ============================================================
+
+// Lay handle console hien tai
+HANDLE LayConsole() {
+    return GetStdHandle(STD_OUTPUT_HANDLE);
+}
+
+// Dat mau sac cho van ban
+void DatMauSac(int Mau) {
+    SetConsoleTextAttribute(LayConsole(), Mau);
+}
+
+// Tra ve mau mac dinh (trang/den)
+void DatMauMacDinh() {
+    DatMauSac(MAU_MAC_DINH);
+}
+
+// Di chuyen con tro den toa do (X, Y) - X=cot, Y=dong
+void GotoXY(int X, int Y) {
+    COORD ToaDo;
+    ToaDo.X = X;
+    ToaDo.Y = Y;
+    SetConsoleCursorPosition(LayConsole(), ToaDo);
+}
+
+// In 1 dong trong khung: "|  {NoiDung}..." roi can le phai + dong khung
+void InDongKhung(const char* NoiDung, int MauChu) {
+    DatMauSac(MAU_VIEN);
+    printf("|");
+    DatMauSac(MauChu);
+    printf("  %-46s", NoiDung);
+    DatMauSac(MAU_VIEN);
+    printf("|\n");
+}
+
+// In duong ke ngang cua khung (dung ky tu ASCII)
+void InDuongKeNgang(char KyTuGocTrai, char KyTuNoi, char KyTuGocPhai) {
+    DatMauSac(MAU_VIEN);
+    printf("%c", KyTuGocTrai);
+    for (int i = 0; i < 48; i++) printf("=");
+    printf("%c\n", KyTuGocPhai);
+}
 
 #define SoKyTuToiDaMaLop 20
 #define SoKyTuToiDaMaHocVien 20
@@ -28,16 +84,16 @@ void XoaManHinh(void) {
     system("cls");
 }
 
-// In tiêu đề màn hình kèm số tuần
+// In tieu de man hinh voi khung dep + mau sac
 void InTieuDe(const char* TieuDe) {
     XoaManHinh();
-    printf("========================================\n");
-    printf(" CHUONG TRINH QUAN LY HOC VIEN - TUAN 2\n");
-    printf("========================================\n");
-    printf("%s\n", TieuDe);
-    printf("----------------------------------------\n");
-    printf("Nhan phim so de chon. Nhan ESC de quay lai.\n");
-    printf("----------------------------------------\n");
+    InDuongKeNgang('+', '=', '+');
+    InDongKhung("CHUONG TRINH QUAN LY HOC VIEN", MAU_TIEU_DE);
+    InDuongKeNgang('+', '=', '+');
+    InDongKhung(TieuDe, MAU_TIEU_DE);
+    InDuongKeNgang('+', '=', '+');
+    DatMauMacDinh();
+    printf("\n");
 }
 
 // Đợi người dùng nhấn ESC để quay lại menu trước
@@ -48,6 +104,72 @@ void ChoPhimEscQuayLai(void) {
     do {
         Phim = _getch();
     } while (Phim != 27);
+}
+
+// Menu dieu huong bang phim mui ten: ↑↓ chon, ENTER xac nhan, ESC thoat, phim so nhay nhanh
+// DongBatDau: dong bat dau in menu (0-based). Tra ve chi so chon (0-based), -1 neu ESC
+int ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* ThongTinBoSung) {
+    int LienTiep = 0;
+    int Cu = 0;
+    int DongThongTin = DongBatDau;
+
+    // In thong tin bo sung (neu co)
+    if (ThongTinBoSung != NULL) {
+        DatMauSac(MAU_TIEU_DE);
+        GotoXY(0, DongThongTin);
+        printf("  %s\n", ThongTinBoSung);
+        DongBatDau++;
+    }
+
+    // In toan bo menu lan dau tien
+    for (int i = 0; i < SoLuong; i++) {
+        GotoXY(0, DongBatDau + i);
+        if (i == LienTiep) {
+            DatMauSac(MAU_DONG_CHON);
+        } else {
+            DatMauMacDinh();
+        }
+        printf("  %-48s", CacLuaChon[i]);
+    }
+
+    // Vong lap xu ly phim
+    while (1) {
+        int Phim = _getch();
+
+        if (Phim == 224) {                         // Phim mo rong (mui ten)
+            Phim = _getch();
+            Cu = LienTiep;
+            if (Phim == 72) {                      // Mui ten LEN
+                LienTiep = (LienTiep - 1 + SoLuong) % SoLuong;
+            } else if (Phim == 80) {               // Mui ten XUONG
+                LienTiep = (LienTiep + 1) % SoLuong;
+            }
+            if (LienTiep != Cu) {
+                // Bo highlight dong cu
+                GotoXY(0, DongBatDau + Cu);
+                DatMauMacDinh();
+                printf("  %-48s", CacLuaChon[Cu]);
+                // Highlight dong moi
+                GotoXY(0, DongBatDau + LienTiep);
+                DatMauSac(MAU_DONG_CHON);
+                printf("  %-48s", CacLuaChon[LienTiep]);
+            }
+        } else if (Phim == 13) {                   // ENTER
+            DatMauMacDinh();
+            printf("\n");
+            return LienTiep;
+        } else if (Phim == 27) {                   // ESC
+            DatMauMacDinh();
+            return -1;
+        } else if (Phim >= '1' && Phim <= '9') {  // Phim so
+            int ChiSo = Phim - '1';
+            if (ChiSo < SoLuong) {
+                DatMauMacDinh();
+                printf("\n");
+                return ChiSo;
+            }
+        }
+    }
 }
 
 // Sao chép chuỗi an toàn (dùng strncpy_s)
@@ -486,27 +608,26 @@ void XuLyMenuInDanhSach(const char* TenTep) {
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien;
-        int Phim;
 
         SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
 
+        const char* MenuIn[] = {
+            "1. In toan bo danh sach",
+            "2. In theo lop",
+            "3. In theo ket qua sap xep/tim kiem"
+        };
+
         InTieuDe("M2. IN DANH SACH");
-        printf("1. In toan bo danh sach\n");
-        printf("2. In theo lop\n");
-        printf("3. In theo ket qua sap xep/tim kiem\n");
+        int Chon = ChonMenu(6, MenuIn, 3, NULL);
+        if (Chon == -1) return;
 
-        Phim = _getch();
-        if (Phim == 27) {
-            return;
-        }
-
-        if (Phim == '1') {
+        if (Chon == 0) {
             InTieuDe("M2. IN TOAN BO DANH SACH");
             InBangHocVien(DanhSachHocVien, SoLuongHocVien);
             ChoPhimEscQuayLai();
         }
 
-        if (Phim == '2') {
+        if (Chon == 1) {
             char MaLopCanIn[SoKyTuToiDaMaLop];
             int ViTri;
             int SoLuongTimThay = 0;
@@ -531,7 +652,7 @@ void XuLyMenuInDanhSach(const char* TenTep) {
             ChoPhimEscQuayLai();
         }
 
-        if (Phim == '3') {
+        if (Chon == 2) {
             InTieuDe("M2. IN THEO KET QUA SAP XEP/TIM KIEM");
             printf("Chuc nang nay se hoan thien o cac tuan sau.\n");
             ChoPhimEscQuayLai();
@@ -727,7 +848,7 @@ void XuLyMenuSapXep(const char* TenTep) {
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien;
-        int ThuatToan;
+        char ThongTin[100];
 
         SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
 
@@ -738,81 +859,72 @@ void XuLyMenuSapXep(const char* TenTep) {
             return;
         }
 
+        // --- Menu cap 1: chon thuat toan ---
+        const char* MenuThuatToan[] = {
+            "1. Sap xep chon",
+            "2. Sap xep chen",
+            "3. Quicksort",
+            "4. Mergesort"
+        };
+
+        sprintf_s(ThongTin, sizeof(ThongTin), "So hoc vien hien co trong file: %d", SoLuongHocVien);
+
         InTieuDe("M3. SAP XEP");
-        printf("So hoc vien hien co trong file: %d\n\n", SoLuongHocVien);
-        printf("Chon thuat toan:\n");
-        printf("1. Sap xep chon\n");
-        printf("2. Sap xep chen\n");
-        printf("3. Quicksort\n");
-        printf("4. Mergesort\n");
+        int ChonTT = ChonMenu(7, MenuThuatToan, 4, ThongTin);
+        if (ChonTT == -1) return;
 
-        ThuatToan = _getch();
-        if (ThuatToan == 27) {
-            return;
+        // --- Menu cap 2: chon khoa ---
+        const char* MenuKhoa[] = {
+            "1. Ma hoc vien",
+            "2. Ho va ten",
+            "3. Ngay sinh",
+            "4. Diem trung binh tich luy"
+        };
+
+        char KhoaDaChon = '1' + ChonTT;  // Chuyen 0-based → ky tu '1'-'4'
+        sprintf_s(ThongTin, sizeof(ThongTin), "Thuat toan da chon: %s", LayTenThuatToan(KhoaDaChon));
+
+        InTieuDe("M3. SAP XEP - CHON KHOA");
+        int ChonKhoa = ChonMenu(7, MenuKhoa, 4, ThongTin);
+        if (ChonKhoa == -1) continue;
+
+        // --- Thuc hien sap xep ---
+        char KhoaKey = '1' + ChonKhoa;   // Chuyen 0-based → ky tu '1'-'4'
+        InTieuDe("M3. SAP XEP - KET QUA");
+        printf("Thuat toan: %s\n", LayTenThuatToan(KhoaDaChon));
+        printf("Khoa sap xep: %s\n", LayTenKhoa(KhoaKey));
+        printf("So hoc vien: %d\n\n", SoLuongHocVien);
+
+        switch (KhoaDaChon) {
+        case '1': SapXepChon(DanhSachHocVien, SoLuongHocVien, KhoaKey); break;
+        case '2': SapXepChen(DanhSachHocVien, SoLuongHocVien, KhoaKey); break;
+        case '3': SapXepNhanh(DanhSachHocVien, 0, SoLuongHocVien - 1, KhoaKey); break;
+        case '4': SapXepTron(DanhSachHocVien, 0, SoLuongHocVien - 1, KhoaKey); break;
         }
 
-        if (ThuatToan >= '1' && ThuatToan <= '4') {
-            int Khoa;
+        printf("Da sap xep xong!\n\n");
+        InBangHocVien(DanhSachHocVien, SoLuongHocVien);
 
-            InTieuDe("M3. SAP XEP - CHON KHOA");
-            printf("Thuat toan da chon: %s\n\n", LayTenThuatToan(ThuatToan));
-            printf("1. Ma hoc vien\n");
-            printf("2. Ho va ten\n");
-            printf("3. Ngay sinh\n");
-            printf("4. Diem trung binh tich luy\n");
+        printf("\nBan co muon luu ket qua sap xep vao file khong?\n");
+        printf("Nhan ENTER de luu, ESC de bo qua.\n");
 
-            Khoa = _getch();
-            if (Khoa == 27) {
-                continue;
+        while (1) {
+            int Phim = _getch();
+            if (Phim == 13) {
+                if (GhiDanhSachVaoFile(TenTep, DanhSachHocVien, SoLuongHocVien)) {
+                    printf("\nDa luu danh sach da sap xep vao file %s.\n", TenTep);
+                } else {
+                    printf("\nLoi: Khong ghi duoc file.\n");
+                }
+                break;
             }
-
-            if (Khoa >= '1' && Khoa <= '4') {
-                InTieuDe("M3. SAP XEP - KET QUA");
-                printf("Thuat toan: %s\n", LayTenThuatToan(ThuatToan));
-                printf("Khoa sap xep: %s\n", LayTenKhoa(Khoa));
-                printf("So hoc vien: %d\n\n", SoLuongHocVien);
-
-                switch (ThuatToan) {
-                case '1':
-                    SapXepChon(DanhSachHocVien, SoLuongHocVien, Khoa);
-                    break;
-                case '2':
-                    SapXepChen(DanhSachHocVien, SoLuongHocVien, Khoa);
-                    break;
-                case '3':
-                    SapXepNhanh(DanhSachHocVien, 0, SoLuongHocVien - 1, Khoa);
-                    break;
-                case '4':
-                    SapXepTron(DanhSachHocVien, 0, SoLuongHocVien - 1, Khoa);
-                    break;
-                }
-
-                printf("Da sap xep xong!\n\n");
-                InBangHocVien(DanhSachHocVien, SoLuongHocVien);
-
-                printf("\nBan co muon luu ket qua sap xep vao file khong?\n");
-                printf("Nhan ENTER de luu, ESC de bo qua.\n");
-
-                while (1) {
-                    int Phim = _getch();
-                    if (Phim == 13) {
-                        if (GhiDanhSachVaoFile(TenTep, DanhSachHocVien, SoLuongHocVien)) {
-                            printf("\nDa luu danh sach da sap xep vao file %s.\n", TenTep);
-                        }
-                        else {
-                            printf("\nLoi: Khong ghi duoc file.\n");
-                        }
-                        break;
-                    }
-                    if (Phim == 27) {
-                        printf("\nKhong luu thay doi.\n");
-                        break;
-                    }
-                }
-
-                ChoPhimEscQuayLai();
+            if (Phim == 27) {
+                printf("\nKhong luu thay doi.\n");
+                break;
             }
         }
+
+        ChoPhimEscQuayLai();
     }
 }
 
@@ -821,54 +933,54 @@ void XuLyMenuTimKiem(const char* TenTep) {
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien;
-        int ThuatToan;
+        char ThongTin[100];
 
         SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
 
+        // --- Menu cap 1: chon thuat toan ---
+        const char* MenuTK[] = {
+            "1. Tim kiem tuan tu",
+            "2. Tim kiem nhi phan"
+        };
+
+        sprintf_s(ThongTin, sizeof(ThongTin), "So hoc vien hien co trong file: %d", SoLuongHocVien);
+
         InTieuDe("M4. TIM KIEM");
-        printf("So hoc vien hien co trong file: %d\n\n", SoLuongHocVien);
-        printf("Chon thuat toan tim kiem:\n");
-        printf("1. Tim kiem tuan tu\n");
-        printf("2. Tim kiem nhi phan\n");
+        int ChonTK = ChonMenu(7, MenuTK, 2, ThongTin);
+        if (ChonTK == -1) return;
 
-        ThuatToan = _getch();
-        if (ThuatToan == 27) {
-            return;
+        // --- Menu cap 2: chon khoa ---
+        const char* MenuKhoaTK[] = {
+            "1. Ma lop",
+            "2. Ma hoc vien",
+            "3. Ho va ten",
+            "4. Ngay sinh",
+            "5. Diem trung binh tich luy"
+        };
+
+        char KyTuTK = '1' + ChonTK;
+        sprintf_s(ThongTin, sizeof(ThongTin), "Thuat toan da chon: %c", KyTuTK);
+
+        InTieuDe("M4. TIM KIEM - CHON KHOA");
+        int ChonKhoaTK = ChonMenu(7, MenuKhoaTK, 5, ThongTin);
+        if (ChonKhoaTK == -1) continue;
+
+        // --- Nhap gia tri tim kiem ---
+        char GiaTri[SoKyTuToiDaHoTen];
+        char KhoaKyTu = '1' + ChonKhoaTK;
+
+        InTieuDe("M4. TIM KIEM - NHAP GIA TRI");
+        printf("Nhan ESC de huy.\n\n");
+
+        if (!NhapDongCoEsc("Gia tri can tim: ", GiaTri, sizeof(GiaTri))) {
+            continue;
         }
 
-        if (ThuatToan >= '1' && ThuatToan <= '2') {
-            int Khoa;
-
-            InTieuDe("M4. TIM KIEM - CHON KHOA");
-            printf("Thuat toan da chon: %c\n\n", ThuatToan);
-            printf("1. Ma lop\n");
-            printf("2. Ma hoc vien\n");
-            printf("3. Ho va ten\n");
-            printf("4. Ngay sinh\n");
-            printf("5. Diem trung binh tich luy\n");
-
-            Khoa = _getch();
-            if (Khoa == 27) {
-                continue;
-            }
-
-            if (Khoa >= '1' && Khoa <= '5') {
-                char GiaTri[SoKyTuToiDaHoTen];
-
-                InTieuDe("M4. TIM KIEM - NHAP GIA TRI");
-                printf("Nhan ESC de huy.\n\n");
-
-                if (!NhapDongCoEsc("Gia tri can tim: ", GiaTri, sizeof(GiaTri))) {
-                    continue;
-                }
-
-                InTieuDe("M4. TIM KIEM");
-                printf("Da chon thuat toan %c, khoa %c, gia tri \"%s\".\n", ThuatToan, Khoa, GiaTri);
-                printf("So hoc vien hien co trong file: %d\n", SoLuongHocVien);
-                printf("Chuc nang tim kiem se hoan thien o tuan 4.\n");
-                ChoPhimEscQuayLai();
-            }
-        }
+        InTieuDe("M4. TIM KIEM");
+        printf("Da chon thuat toan %c, khoa %c, gia tri \"%s\".\n", KyTuTK, KhoaKyTu, GiaTri);
+        printf("So hoc vien hien co trong file: %d\n", SoLuongHocVien);
+        printf("Chuc nang tim kiem se hoan thien o tuan 4.\n");
+        ChoPhimEscQuayLai();
     }
 }
 
@@ -877,27 +989,26 @@ void XuLyMenuThongKe(const char* TenTep) {
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien;
-        int Phim;
+        char ThongTin[100];
 
         SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
 
+        const char* MenuTK[] = {
+            "1. So luong sinh vien theo lop",
+            "2. Ty le xep loai hoc tap theo lop"
+        };
+
+        sprintf_s(ThongTin, sizeof(ThongTin), "So hoc vien hien co trong file: %d", SoLuongHocVien);
+
         InTieuDe("M5. THONG KE");
-        printf("So hoc vien hien co trong file: %d\n\n", SoLuongHocVien);
-        printf("1. So luong sinh vien theo lop\n");
-        printf("2. Ty le xep loai hoc tap theo lop\n");
+        int Chon = ChonMenu(7, MenuTK, 2, ThongTin);
+        if (Chon == -1) return;
 
-        Phim = _getch();
-        if (Phim == 27) {
-            return;
-        }
-
-        if (Phim >= '1' && Phim <= '2') {
-            InTieuDe("M5. THONG KE");
-            printf("Ban da chon muc %c.\n", Phim);
-            printf("So hoc vien hien co trong file: %d\n", SoLuongHocVien);
-            printf("Chuc nang thong ke se hoan thien o tuan 5.\n");
-            ChoPhimEscQuayLai();
-        }
+        InTieuDe("M5. THONG KE");
+        printf("Ban da chon muc %d.\n", Chon + 1);
+        printf("So hoc vien hien co trong file: %d\n", SoLuongHocVien);
+        printf("Chuc nang thong ke se hoan thien o tuan 5.\n");
+        ChoPhimEscQuayLai();
     }
 }
 
@@ -906,42 +1017,26 @@ int main(void) {
     int DangChay = 1;
     const char* TenTepNhiPhan = "HocVien.dat";
 
+    const char* MenuChinh[] = {
+        "1. Them moi ho so (M1)",
+        "2. In danh sach (M2)",
+        "3. Sap xep (M3)",
+        "4. Tim kiem (M4)",
+        "5. Thong ke (M5)",
+        "6. Thoat (M6)"
+    };
+
     while (DangChay) {
-        int Phim;
-
         InTieuDe("MENU CHINH");
-        printf("1. Them moi ho so (M1)\n");
-        printf("2. In danh sach (M2)\n");
-        printf("3. Sap xep (M3)\n");
-        printf("4. Tim kiem (M4)\n");
-        printf("5. Thong ke (M5)\n");
-        printf("6. Thoat (M6)\n");
 
-        Phim = _getch();
-        switch (Phim) {
-        case '1':
-            XuLyThemHoSo(TenTepNhiPhan);
-            break;
-        case '2':
-            XuLyMenuInDanhSach(TenTepNhiPhan);
-            break;
-        case '3':
-            XuLyMenuSapXep(TenTepNhiPhan);
-            break;
-        case '4':
-            XuLyMenuTimKiem(TenTepNhiPhan);
-            break;
-        case '5':
-            XuLyMenuThongKe(TenTepNhiPhan);
-            break;
-        case '6':
-            DangChay = 0;
-            break;
-        case 27:
-            DangChay = 0;
-            break;
-        default:
-            break;
+        int Chon = ChonMenu(6, MenuChinh, 6, NULL);
+        switch (Chon) {
+        case 0: XuLyThemHoSo(TenTepNhiPhan); break;
+        case 1: XuLyMenuInDanhSach(TenTepNhiPhan); break;
+        case 2: XuLyMenuSapXep(TenTepNhiPhan); break;
+        case 3: XuLyMenuTimKiem(TenTepNhiPhan); break;
+        case 4: XuLyMenuThongKe(TenTepNhiPhan); break;
+        case 5: case -1: DangChay = 0; break;
         }
     }
 
