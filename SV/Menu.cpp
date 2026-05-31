@@ -117,9 +117,10 @@ void XuLyMenuSapXep(const char* TenTep) {
         if (ChonTT == -1) return;
 
         // Menu cap 2: chon khoa
+        const char* TenTT[] = { "Sap xep chon", "Sap xep chen", "Quicksort", "Mergesort" };
+        const char* TenKhoaArr[] = { "Ma hoc vien", "Ho va ten", "Ngay sinh", "Diem TBTL" };
         const char* MenuKhoa[] = { "1. Ma hoc vien", "2. Ho va ten", "3. Ngay sinh", "4. Diem trung binh tich luy" };
-        char KhoaDaChon = '1' + ChonTT;
-        sprintf_s(ThongTin, sizeof(ThongTin), "Thuat toan da chon: %s", LayTenThuatToan(KhoaDaChon));
+        sprintf_s(ThongTin, sizeof(ThongTin), "Thuat toan da chon: %s", TenTT[ChonTT]);
         InTieuDe("M3. SAP XEP - CHON KHOA");
         int ChonKhoa = ChonMenu(7, MenuKhoa, 4, ThongTin);
         if (ChonKhoa == -1) continue;
@@ -127,15 +128,15 @@ void XuLyMenuSapXep(const char* TenTep) {
         // Thuc hien sap xep
         char KhoaKey = '1' + ChonKhoa;
         InTieuDe("M3. SAP XEP - KET QUA");
-        printf("Thuat toan: %s\n", LayTenThuatToan(KhoaDaChon));
-        printf("Khoa sap xep: %s\n", LayTenKhoa(KhoaKey));
+        printf("Thuat toan: %s\n", TenTT[ChonTT]);
+        printf("Khoa sap xep: %s\n", TenKhoaArr[ChonKhoa]);
         printf("So hoc vien: %d\n\n", SoLuongHocVien);
 
-        switch (KhoaDaChon) {
-        case '1': SapXepChon(DanhSachHocVien, SoLuongHocVien, KhoaKey); break;
-        case '2': SapXepChen(DanhSachHocVien, SoLuongHocVien, KhoaKey); break;
-        case '3': SapXepNhanh(DanhSachHocVien, 0, SoLuongHocVien - 1, KhoaKey); break;
-        case '4': SapXepTron(DanhSachHocVien, 0, SoLuongHocVien - 1, KhoaKey); break;
+        switch (ChonTT) {
+        case 0: SapXepChon(DanhSachHocVien, SoLuongHocVien, KhoaKey); break;
+        case 1: SapXepChen(DanhSachHocVien, SoLuongHocVien, KhoaKey); break;
+        case 2: SapXepNhanh(DanhSachHocVien, 0, SoLuongHocVien - 1, KhoaKey); break;
+        case 3: SapXepTron(DanhSachHocVien, 0, SoLuongHocVien - 1, KhoaKey); break;
         }
 
         printf("Da sap xep xong!\n\n");
