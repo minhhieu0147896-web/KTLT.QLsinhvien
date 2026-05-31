@@ -1,0 +1,39 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build output
+x64/
+Debug/
+Release/
+*.exe
+*.dll
+*.ilk
+*.pdb
+*.obj
+*.tlog
+*.log
+*.idb
+*.ipch
+*.db
+*.db-shm
+*.db-wal
+*.opendb
+*.vsidx
+Browse.VC.db*
+
+# Qwen
+.qwen/
+
+# Documents
+tailieu/
+*.doc
+*.docx
+*.pdf
+
+# OS
+Thumbs.db
+Desktop.ini

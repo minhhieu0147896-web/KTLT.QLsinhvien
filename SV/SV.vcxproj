@@ -123,7 +123,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DuLieu.cpp" />
+    <ClCompile Include="function.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="SapXep.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="TienIch.cpp" />
+    <ClCompile Include="TimKiem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CauTruc.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
