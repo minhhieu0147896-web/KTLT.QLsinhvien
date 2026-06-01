@@ -14,19 +14,19 @@ int main(void) {
         "3. Sap xep (M3)",
         "4. Tim kiem (M4)",
         "5. Thong ke (M5)",
-        "6. Thoat (M6)"
+        "0. Thoat"
     };
 
     while (DangChay) {
         InTieuDe("MENU CHINH");
         int Chon = ChonMenu(6, MenuChinh, 6, NULL);
         switch (Chon) {
-        case 0: XuLyThemHoSo(TenTepNhiPhan);       break;
-        case 1: XuLyMenuInDanhSach(TenTepNhiPhan); break;
-        case 2: XuLyMenuSapXep(TenTepNhiPhan);     break;
-        case 3: XuLyMenuTimKiem(TenTepNhiPhan);    break;
-        case 4: XuLyMenuThongKe(TenTepNhiPhan);    break;
-        case 5: case -1: DangChay = 0;              break;
+        case 1: XuLyThemHoSo(TenTepNhiPhan);       break;
+        case 2: XuLyMenuInDanhSach(TenTepNhiPhan); break;
+        case 3: XuLyMenuSapXep(TenTepNhiPhan);     break;
+        case 4: XuLyMenuTimKiem(TenTepNhiPhan);    break;
+        case 5: XuLyMenuThongKe(TenTepNhiPhan);    break;
+        case 0: case 6: case -1: DangChay = 0;      break;
         }
     }
 

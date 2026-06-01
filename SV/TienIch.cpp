@@ -94,7 +94,7 @@ static void CapNhatDongDangChon(int DongBatDau, const char* CacLuaChon[],
 }
 
 // Menu dieu huong bang phim mui ten: len/xuong chon, ENTER xac nhan, ESC thoat.
-// DongBatDau: dong bat dau in menu (0-based). Tra ve chi so chon (0-based), -1 neu ESC.
+// Tra ve dung so thu tu hien tren menu: 1..SoLuong, 0 neu bam phim 0, -1 neu ESC.
 int ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* ThongTinBoSung) {
     int ViTriDangChon = 0;
 
@@ -115,7 +115,7 @@ int ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* 
         if (Phim == PHIM_ENTER) {
             DatMauMacDinh();
             printf("\n");
-            return ViTriDangChon;
+            return ViTriDangChon + 1;
         }
 
         if (Phim == PHIM_ESC) {
@@ -123,12 +123,18 @@ int ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* 
             return -1;
         }
 
+        if (Phim == '0') {
+            DatMauMacDinh();
+            printf("\n");
+            return 0;
+        }
+
         if (Phim >= '1' && Phim <= '9') {
-            int ViTriTheoSo = Phim - '1';
-            if (ViTriTheoSo < SoLuong) {
+            int SoDuocChon = Phim - '0';
+            if (SoDuocChon <= SoLuong) {
                 DatMauMacDinh();
                 printf("\n");
-                return ViTriTheoSo;
+                return SoDuocChon;
             }
         }
 
