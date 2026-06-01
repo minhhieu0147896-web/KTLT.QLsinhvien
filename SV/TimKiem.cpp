@@ -4,6 +4,62 @@
 
 #include "CauTruc.h"
 
+static int DocSoTuChuoi(const char* Chuoi, int* ViTri, int* GiaTri) {
+    int CoChuSo = 0;
+    int KetQua = 0;
+
+    while (isdigit((unsigned char)Chuoi[*ViTri])) {
+        CoChuSo = 1;
+        KetQua = KetQua * 10 + (Chuoi[*ViTri] - '0');
+        (*ViTri)++;
+    }
+
+    if (!CoChuSo) return 0;
+    *GiaTri = KetQua;
+    return 1;
+}
+
+static int ChuyenChuoiThanhNgay(const char* Chuoi, int* Ngay, int* Thang, int* Nam) {
+    int ViTri = 0;
+
+    if (!DocSoTuChuoi(Chuoi, &ViTri, Ngay)) return 0;
+    if (Chuoi[ViTri] != '/') return 0;
+    ViTri++;
+
+    if (!DocSoTuChuoi(Chuoi, &ViTri, Thang)) return 0;
+    if (Chuoi[ViTri] != '/') return 0;
+    ViTri++;
+
+    if (!DocSoTuChuoi(Chuoi, &ViTri, Nam)) return 0;
+    if (Chuoi[ViTri] != '\0') return 0;
+
+    return 1;
+}
+
+static int ChuyenChuoiThanhDiem(const char* Chuoi, float* Diem) {
+    int i = 0;
+    int CoChuSo = 0;
+    int CoDauCham = 0;
+
+    if (Chuoi[0] == '\0') return 0;
+
+    while (Chuoi[i] != '\0') {
+        if (isdigit((unsigned char)Chuoi[i])) {
+            CoChuSo = 1;
+        } else if (Chuoi[i] == '.' && !CoDauCham) {
+            CoDauCham = 1;
+        } else {
+            return 0;
+        }
+        i++;
+    }
+
+    if (!CoChuSo) return 0;
+
+    *Diem = (float)atof(Chuoi);
+    return 1;
+}
+
 // So sanh 1 hoc vien voi gia tri can tim. Tra ve 0 neu khop, <0 neu be hon, >0 neu lon hon
 static int SoSanhTimKiem(HocVien HV, const char* GiaTri, int Khoa) {
     switch (Khoa) {
@@ -15,16 +71,25 @@ static int SoSanhTimKiem(HocVien HV, const char* GiaTri, int Khoa) {
         return strcmp(HV.HoTen, GiaTri);
     case KHOA_NGAY_SINH: {
         int d, m, y;
-        if (sscanf_s(GiaTri, "%d/%d/%d", &d, &m, &y) != 3) return -1;
-        if (HV.NgaySinh.Nam != y) return (HV.NgaySinh.Nam < y) ? -1 : 1;
-        if (HV.NgaySinh.Thang != m) return (HV.NgaySinh.Thang < m) ? -1 : 1;
-        return (HV.NgaySinh.Ngay != d) ? ((HV.NgaySinh.Ngay < d) ? -1 : 1) : 0;
+        if (!ChuyenChuoiThanhNgay(GiaTri, &d, &m, &y)) return -1;
+
+        if (HV.NgaySinh.Nam < y) return -1;
+        if (HV.NgaySinh.Nam > y) return 1;
+
+        if (HV.NgaySinh.Thang < m) return -1;
+        if (HV.NgaySinh.Thang > m) return 1;
+
+        if (HV.NgaySinh.Ngay < d) return -1;
+        if (HV.NgaySinh.Ngay > d) return 1;
+
+        return 0;
     }
     case KHOA_DIEM_TBTL: {
         float d;
-        if (sscanf_s(GiaTri, "%f", &d) != 1) return -1;
+        if (!ChuyenChuoiThanhDiem(GiaTri, &d)) return -1;
         if (HV.DiemTrungBinhTichLuy < d) return -1;
-        return (HV.DiemTrungBinhTichLuy > d) ? 1 : 0;
+        if (HV.DiemTrungBinhTichLuy > d) return 1;
+        return 0;
     }
     }
     return 0;

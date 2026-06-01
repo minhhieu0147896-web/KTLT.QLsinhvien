@@ -81,7 +81,10 @@ void ChoPhimEscQuayLai(void) {
 
 static void InDongMenu(int Dong, const char* NoiDung, int DangDuocChon) {
     GotoXY(0, Dong);
-    DatMauSac(DangDuocChon ? MAU_DONG_CHON : MAU_MAC_DINH);
+    if (DangDuocChon)
+        DatMauSac(MAU_DONG_CHON);
+    else
+        DatMauSac(MAU_MAC_DINH);
     printf("  %-*s", CHIEU_RONG_MENU, NoiDung);
 }
 
@@ -152,9 +155,17 @@ int ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* 
     }
 }
 
-// Sao chep chuoi an toan (dung strncpy_s)
+// Sao chep chuoi, khong de tran bo dem dich
 void SaoChepChuoi(char* ChuoiDich, size_t KichThuocChuoiDich, const char* ChuoiNguon) {
-    strncpy_s(ChuoiDich, KichThuocChuoiDich, ChuoiNguon, _TRUNCATE);
+    size_t i = 0;
+
+    if (KichThuocChuoiDich == 0) return;
+
+    while (ChuoiNguon[i] != '\0' && i < KichThuocChuoiDich - 1) {
+        ChuoiDich[i] = ChuoiNguon[i];
+        i++;
+    }
+    ChuoiDich[i] = '\0';
 }
 
 // Nhap chuoi ky tu, ho tro Backspace va ESC de huy bo
@@ -195,7 +206,13 @@ int NhapHoTenChuanHoa(const char* Nhan, char* BoDem, int KichThuoc) {
         }
         if (isalpha((unsigned char)Phim) && DoDai < KichThuoc - 1) {
             bool CanVietHoa = (DoDai == 0 || BoDem[DoDai - 1] == ' ');
-            char KyTu = CanVietHoa ? (char)toupper(Phim) : (char)tolower(Phim);
+            char KyTu;
+
+            if (CanVietHoa)
+                KyTu = (char)toupper(Phim);
+            else
+                KyTu = (char)tolower(Phim);
+
             BoDem[DoDai++] = KyTu;
             printf("%c", KyTu);
         }
@@ -227,8 +244,26 @@ void InNgaySinh(Date NgaySinh) {
 
 // Chuyen chuoi sang so nguyen, tra ve 0 neu that bai
 int ChuyenChuoiThanhSoNguyen(const char* Chuoi, int* GiaTri) {
-    char KyTuThua;
-    if (sscanf_s(Chuoi, "%d%c", GiaTri, &KyTuThua, 1) != 1) return 0;
+    int i = 0;
+    int Dau = 1;
+    int KetQua = 0;
+
+    if (Chuoi[0] == '\0') return 0;
+
+    if (Chuoi[0] == '-') {
+        Dau = -1;
+        i = 1;
+    }
+
+    if (Chuoi[i] == '\0') return 0;
+
+    while (Chuoi[i] != '\0') {
+        if (!isdigit((unsigned char)Chuoi[i])) return 0;
+        KetQua = KetQua * 10 + (Chuoi[i] - '0');
+        i++;
+    }
+
+    *GiaTri = KetQua * Dau;
     return 1;
 }
 
@@ -296,8 +331,26 @@ int NhapMaHocVienHopLe(char* MaHocVien, int KichThuoc, HocVien DanhSachHocVien[]
 
 // Kiem tra chuoi diem co hop le khong (so thuc trong khoang 0.0 - 4.0)
 int KiemTraDiemHopLe(const char* ChuoiDiem, float* Diem) {
-    char KyTuThua;
-    if (sscanf_s(ChuoiDiem, "%f%c", Diem, &KyTuThua, 1) != 1) return 0;
+    int i = 0;
+    int CoChuSo = 0;
+    int CoDauCham = 0;
+
+    if (ChuoiDiem[0] == '\0') return 0;
+
+    while (ChuoiDiem[i] != '\0') {
+        if (isdigit((unsigned char)ChuoiDiem[i])) {
+            CoChuSo = 1;
+        } else if (ChuoiDiem[i] == '.' && !CoDauCham) {
+            CoDauCham = 1;
+        } else {
+            return 0;
+        }
+        i++;
+    }
+
+    if (!CoChuSo) return 0;
+
+    *Diem = (float)atof(ChuoiDiem);
     return *Diem >= 0.0f && *Diem <= 4.0f;
 }
 

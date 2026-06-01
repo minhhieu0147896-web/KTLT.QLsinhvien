@@ -12,6 +12,16 @@ typedef struct {
     int SoLuongTheoLoai[SO_LOAI_HOC_TAP];
 } ThongKeLop;
 
+static void SaoChepMaLop(char MaLopDich[], const char* MaLopNguon) {
+    int i = 0;
+
+    while (MaLopNguon[i] != '\0' && i < SoKyTuToiDaMaLop - 1) {
+        MaLopDich[i] = MaLopNguon[i];
+        i++;
+    }
+    MaLopDich[i] = '\0';
+}
+
 static int TimViTriLop(ThongKeLop BangThongKe[], int SoLop, const char* MaLop) {
     for (int i = 0; i < SoLop; i++)
         if (strcmp(BangThongKe[i].MaLop, MaLop) == 0)
@@ -24,7 +34,7 @@ static int ThemLopNeuChuaCo(ThongKeLop BangThongKe[], int* SoLop, const char* Ma
     if (ViTri >= 0) return ViTri;
 
     ViTri = *SoLop;
-    strcpy_s(BangThongKe[ViTri].MaLop, sizeof(BangThongKe[ViTri].MaLop), MaLop);
+    SaoChepMaLop(BangThongKe[ViTri].MaLop, MaLop);
     BangThongKe[ViTri].TongSo = 0;
     for (int i = 0; i < SO_LOAI_HOC_TAP; i++)
         BangThongKe[ViTri].SoLuongTheoLoai[i] = 0;

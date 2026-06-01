@@ -65,7 +65,16 @@ static void Tron(HocVien DanhSach[], int Trai, int Giua, int Phai, int Khoa) {
     for (int i = 0; i < n1; i++) L[i] = DanhSach[Trai + i];
     for (int j = 0; j < n2; j++) R[j] = DanhSach[Giua + 1 + j];
     int i = 0, j = 0, k = Trai;
-    while (i < n1 && j < n2) DanhSach[k++] = SoSanhHocVien(L[i], R[j], Khoa) ? L[i++] : R[j++];
+    while (i < n1 && j < n2) {
+        if (SoSanhHocVien(L[i], R[j], Khoa)) {
+            DanhSach[k] = L[i];
+            i++;
+        } else {
+            DanhSach[k] = R[j];
+            j++;
+        }
+        k++;
+    }
     while (i < n1) DanhSach[k++] = L[i++];
     while (j < n2) DanhSach[k++] = R[j++];
     free(L); free(R);
