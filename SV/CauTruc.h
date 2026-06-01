@@ -71,6 +71,7 @@ int    NhapMaHocVienHopLe(char* MaHocVien, int KichThuoc, HocVien DanhSach[], in
 int    NhapDiemHopLe(float* Diem);
 int    XacNhanThemHocVien();
 int    LaNamNhuan(int Nam);
+int    KiemTraNgayThangNamHopLe(Date NgaySinh);
 
 void   InNgaySinh(Date NgaySinh);
 void   InMotHocVien(HocVien HV, int STT);
@@ -96,6 +97,13 @@ void   SapXepTron(HocVien DanhSach[], int Trai, int Phai, int Khoa);
 // ============================================================
 void   TimKiemTuanTu(HocVien DanhSach[], int SoLuong, const char* GiaTri, int Khoa, HocVien KetQua[], int* SoKetQua);
 void   TimKiemNhiPhan(HocVien DanhSach[], int SoLuong, const char* GiaTri, int Khoa, HocVien KetQua[], int* SoKetQua);
+int    SoSanhNgaySinh(Date A, Date B);
+void   TimKiemTuanTuTheoNgaySinh(HocVien DanhSach[], int SoLuong, Date NgaySinh, HocVien KetQua[], int* SoKetQua);
+void   TimKiemNhiPhanTheoNgaySinh(HocVien DanhSach[], int SoLuong, Date NgaySinh, HocVien KetQua[], int* SoKetQua);
+void   TimKiemTheoNgayTrongThang(HocVien DanhSach[], int SoLuong, int Ngay, HocVien KetQua[], int* SoKetQua);
+void   TimKiemTheoThangSinh(HocVien DanhSach[], int SoLuong, int Thang, HocVien KetQua[], int* SoKetQua);
+void   TimKiemTheoNamSinh(HocVien DanhSach[], int SoLuong, int Nam, HocVien KetQua[], int* SoKetQua);
+void   TimKiemTheoNgayVaThang(HocVien DanhSach[], int SoLuong, int Ngay, int Thang, HocVien KetQua[], int* SoKetQua);
 
 // ============================================================
 // MENU (Menu.cpp)

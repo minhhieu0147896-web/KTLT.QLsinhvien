@@ -153,6 +153,126 @@ void XuLyMenuSapXep(const char* TenTep) {
     }
 }
 
+static int NhapNgayCanTim(int* Ngay) {
+    while (1) {
+        if (!NhapSoNguyenCoEsc("Nhap ngay (1-31): ", Ngay)) return 0;
+        if (*Ngay >= 1 && *Ngay <= 31) return 1;
+        printf("Ngay phai nam trong khoang 1 den 31. Vui long nhap lai.\n");
+    }
+}
+
+static int NhapThangCanTim(int* Thang) {
+    while (1) {
+        if (!NhapSoNguyenCoEsc("Nhap thang (1-12): ", Thang)) return 0;
+        if (*Thang >= 1 && *Thang <= 12) return 1;
+        printf("Thang phai nam trong khoang 1 den 12. Vui long nhap lai.\n");
+    }
+}
+
+static int NhapNamCanTim(int* Nam) {
+    while (1) {
+        if (!NhapSoNguyenCoEsc("Nhap nam: ", Nam)) return 0;
+        if (*Nam >= 1900 && *Nam <= 2026) return 1;
+        printf("Nam phai nam trong khoang 1900 den 2026. Vui long nhap lai.\n");
+    }
+}
+
+static int NhapNgaySinhDayDuCanTim(Date* NgaySinh) {
+    while (1) {
+        printf("Nhap ngay sinh can tim:\n");
+        if (!NhapNgayCanTim(&NgaySinh->Ngay)) return 0;
+        if (!NhapThangCanTim(&NgaySinh->Thang)) return 0;
+        if (!NhapNamCanTim(&NgaySinh->Nam)) return 0;
+
+        if (KiemTraNgayThangNamHopLe(*NgaySinh)) return 1;
+        printf("Ngay/thang/nam khong ton tai tren lich. Vui long nhap lai.\n");
+    }
+}
+
+static void XuLyTimKiemTheoNgaySinh(HocVien DanhSachHocVien[], int SoLuongHocVien,
+                                    int ChonTK, const char* TenThuatToan) {
+    const char* MenuNgaySinh[] = {
+        "1. Tim dung ngay/thang/nam",
+        "2. Tim theo ngay trong thang",
+        "3. Tim theo thang sinh",
+        "4. Tim theo nam sinh",
+        "5. Tim theo ngay va thang"
+    };
+
+    HocVien KetQua[SoLuongHocVienToiDa];
+    int SoKetQua = 0;
+    int ChonNgaySinh;
+
+    InTieuDe("M4. TIM KIEM THEO NGAY SINH");
+    printf("  Cac muc 2-5 loc theo tung phan cua ngay sinh.\n");
+    ChonNgaySinh = ChonMenu(8, MenuNgaySinh, 5, NULL);
+    if (ChonNgaySinh <= 0) return;
+
+    InTieuDe("M4. TIM KIEM THEO NGAY SINH");
+
+    if (ChonNgaySinh == 1) {
+        Date NgaySinhCanTim;
+        if (!NhapNgaySinhDayDuCanTim(&NgaySinhCanTim)) return;
+
+        if (ChonTK == 1)
+            TimKiemTuanTuTheoNgaySinh(DanhSachHocVien, SoLuongHocVien, NgaySinhCanTim, KetQua, &SoKetQua);
+        else
+            TimKiemNhiPhanTheoNgaySinh(DanhSachHocVien, SoLuongHocVien, NgaySinhCanTim, KetQua, &SoKetQua);
+
+        InTieuDe("M4. TIM KIEM - KET QUA");
+        printf("Thuat toan: %s\n", TenThuatToan);
+        printf("Kieu tim   : Dung ngay/thang/nam\n");
+        printf("Gia tri    : ");
+        InNgaySinh(NgaySinhCanTim);
+        printf("\n");
+    } else if (ChonNgaySinh == 2) {
+        int Ngay;
+        if (!NhapNgayCanTim(&Ngay)) return;
+        TimKiemTheoNgayTrongThang(DanhSachHocVien, SoLuongHocVien, Ngay, KetQua, &SoKetQua);
+
+        InTieuDe("M4. TIM KIEM - KET QUA");
+        printf("Thuat toan: Tim kiem tuan tu\n");
+        printf("Kieu tim   : Theo ngay trong thang\n");
+        printf("Gia tri    : ngay %d\n", Ngay);
+    } else if (ChonNgaySinh == 3) {
+        int Thang;
+        if (!NhapThangCanTim(&Thang)) return;
+        TimKiemTheoThangSinh(DanhSachHocVien, SoLuongHocVien, Thang, KetQua, &SoKetQua);
+
+        InTieuDe("M4. TIM KIEM - KET QUA");
+        printf("Thuat toan: Tim kiem tuan tu\n");
+        printf("Kieu tim   : Theo thang sinh\n");
+        printf("Gia tri    : thang %d\n", Thang);
+    } else if (ChonNgaySinh == 4) {
+        int Nam;
+        if (!NhapNamCanTim(&Nam)) return;
+        TimKiemTheoNamSinh(DanhSachHocVien, SoLuongHocVien, Nam, KetQua, &SoKetQua);
+
+        InTieuDe("M4. TIM KIEM - KET QUA");
+        printf("Thuat toan: Tim kiem tuan tu\n");
+        printf("Kieu tim   : Theo nam sinh\n");
+        printf("Gia tri    : nam %d\n", Nam);
+    } else {
+        int Ngay;
+        int Thang;
+        if (!NhapNgayCanTim(&Ngay)) return;
+        if (!NhapThangCanTim(&Thang)) return;
+        TimKiemTheoNgayVaThang(DanhSachHocVien, SoLuongHocVien, Ngay, Thang, KetQua, &SoKetQua);
+
+        InTieuDe("M4. TIM KIEM - KET QUA");
+        printf("Thuat toan: Tim kiem tuan tu\n");
+        printf("Kieu tim   : Theo ngay va thang\n");
+        printf("Gia tri    : ngay %d, thang %d\n", Ngay, Thang);
+    }
+
+    printf("Ket qua    : tim thay %d hoc vien\n\n", SoKetQua);
+    if (SoKetQua > 0)
+        InBangHocVien(KetQua, SoKetQua);
+    else
+        printf("Khong tim thay hoc vien nao khop.\n");
+    ChoPhimEscQuayLai();
+}
+
 // M4: Xu ly menu tim kiem (chon thuat toan -> chon khoa -> nhap gia tri tim)
 void XuLyMenuTimKiem(const char* TenTep) {
     while (1) {
@@ -179,6 +299,12 @@ void XuLyMenuTimKiem(const char* TenTep) {
         char GiaTri[SoKyTuToiDaHoTen];
         int ViTriKhoaTK = ChonKhoaTK - 1;
         int KhoaTimKiem = KHOA_MA_LOP + ViTriKhoaTK;
+
+        if (KhoaTimKiem == KHOA_NGAY_SINH) {
+            XuLyTimKiemTheoNgaySinh(DanhSachHocVien, SoLuongHocVien, ChonTK, TenThuatToan[ViTriTK]);
+            continue;
+        }
+
         InTieuDe("M4. TIM KIEM - NHAP GIA TRI");
         printf("Nhan ESC de huy.\n\n");
         if (!NhapDongCoEsc("Gia tri can tim: ", GiaTri, sizeof(GiaTri))) continue;

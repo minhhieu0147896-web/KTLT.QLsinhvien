@@ -60,6 +60,25 @@ static int ChuyenChuoiThanhDiem(const char* Chuoi, float* Diem) {
     return 1;
 }
 
+int SoSanhNgaySinh(Date A, Date B) {
+    if (A.Nam < B.Nam) return -1;
+    if (A.Nam > B.Nam) return 1;
+
+    if (A.Thang < B.Thang) return -1;
+    if (A.Thang > B.Thang) return 1;
+
+    if (A.Ngay < B.Ngay) return -1;
+    if (A.Ngay > B.Ngay) return 1;
+
+    return 0;
+}
+
+static int SoSanhDiem(float A, float B) {
+    if (A < B) return -1;
+    if (A > B) return 1;
+    return 0;
+}
+
 // So sanh 1 hoc vien voi gia tri can tim. Tra ve 0 neu khop, <0 neu be hon, >0 neu lon hon
 static int SoSanhTimKiem(HocVien HV, const char* GiaTri, int Khoa) {
     switch (Khoa) {
@@ -71,25 +90,17 @@ static int SoSanhTimKiem(HocVien HV, const char* GiaTri, int Khoa) {
         return strcmp(HV.HoTen, GiaTri);
     case KHOA_NGAY_SINH: {
         int d, m, y;
+        Date NgayCanTim;
         if (!ChuyenChuoiThanhNgay(GiaTri, &d, &m, &y)) return -1;
-
-        if (HV.NgaySinh.Nam < y) return -1;
-        if (HV.NgaySinh.Nam > y) return 1;
-
-        if (HV.NgaySinh.Thang < m) return -1;
-        if (HV.NgaySinh.Thang > m) return 1;
-
-        if (HV.NgaySinh.Ngay < d) return -1;
-        if (HV.NgaySinh.Ngay > d) return 1;
-
-        return 0;
+        NgayCanTim.Ngay = d;
+        NgayCanTim.Thang = m;
+        NgayCanTim.Nam = y;
+        return SoSanhNgaySinh(HV.NgaySinh, NgayCanTim);
     }
     case KHOA_DIEM_TBTL: {
         float d;
         if (!ChuyenChuoiThanhDiem(GiaTri, &d)) return -1;
-        if (HV.DiemTrungBinhTichLuy < d) return -1;
-        if (HV.DiemTrungBinhTichLuy > d) return 1;
-        return 0;
+        return SoSanhDiem(HV.DiemTrungBinhTichLuy, d);
     }
     }
     return 0;
@@ -132,4 +143,95 @@ void TimKiemNhiPhan(HocVien DanhSach[], int SoLuong, const char* GiaTri, int Kho
             KetQua[(*SoKetQua)++] = Ban[i++];
     }
     free(Ban);
+}
+
+void TimKiemTuanTuTheoNgaySinh(HocVien DanhSach[], int SoLuong, Date NgaySinh,
+                               HocVien KetQua[], int* SoKetQua) {
+    *SoKetQua = 0;
+
+    for (int i = 0; i < SoLuong; i++)
+        if (SoSanhNgaySinh(DanhSach[i].NgaySinh, NgaySinh) == 0)
+            KetQua[(*SoKetQua)++] = DanhSach[i];
+}
+
+void TimKiemNhiPhanTheoNgaySinh(HocVien DanhSach[], int SoLuong, Date NgaySinh,
+                                HocVien KetQua[], int* SoKetQua) {
+    *SoKetQua = 0;
+    if (SoLuong == 0) return;
+
+    HocVien* Ban = (HocVien*)malloc(SoLuong * sizeof(HocVien));
+    if (!Ban) return;
+
+    for (int i = 0; i < SoLuong; i++)
+        Ban[i] = DanhSach[i];
+
+    SapXepChon(Ban, SoLuong, KHOA_NGAY_SINH);
+
+    int Trai = 0;
+    int Phai = SoLuong - 1;
+    int ViTriTimThay = -1;
+
+    while (Trai <= Phai) {
+        int Giua = Trai + (Phai - Trai) / 2;
+        int KetQuaSoSanh = SoSanhNgaySinh(Ban[Giua].NgaySinh, NgaySinh);
+
+        if (KetQuaSoSanh == 0) {
+            ViTriTimThay = Giua;
+            break;
+        } else if (KetQuaSoSanh < 0) {
+            Trai = Giua + 1;
+        } else {
+            Phai = Giua - 1;
+        }
+    }
+
+    if (ViTriTimThay >= 0) {
+        int i = ViTriTimThay;
+        while (i >= 0 && SoSanhNgaySinh(Ban[i].NgaySinh, NgaySinh) == 0)
+            i--;
+        i++;
+
+        while (i < SoLuong && SoSanhNgaySinh(Ban[i].NgaySinh, NgaySinh) == 0) {
+            KetQua[(*SoKetQua)++] = Ban[i];
+            i++;
+        }
+    }
+
+    free(Ban);
+}
+
+void TimKiemTheoNgayTrongThang(HocVien DanhSach[], int SoLuong, int Ngay,
+                               HocVien KetQua[], int* SoKetQua) {
+    *SoKetQua = 0;
+
+    for (int i = 0; i < SoLuong; i++)
+        if (DanhSach[i].NgaySinh.Ngay == Ngay)
+            KetQua[(*SoKetQua)++] = DanhSach[i];
+}
+
+void TimKiemTheoThangSinh(HocVien DanhSach[], int SoLuong, int Thang,
+                          HocVien KetQua[], int* SoKetQua) {
+    *SoKetQua = 0;
+
+    for (int i = 0; i < SoLuong; i++)
+        if (DanhSach[i].NgaySinh.Thang == Thang)
+            KetQua[(*SoKetQua)++] = DanhSach[i];
+}
+
+void TimKiemTheoNamSinh(HocVien DanhSach[], int SoLuong, int Nam,
+                        HocVien KetQua[], int* SoKetQua) {
+    *SoKetQua = 0;
+
+    for (int i = 0; i < SoLuong; i++)
+        if (DanhSach[i].NgaySinh.Nam == Nam)
+            KetQua[(*SoKetQua)++] = DanhSach[i];
+}
+
+void TimKiemTheoNgayVaThang(HocVien DanhSach[], int SoLuong, int Ngay, int Thang,
+                            HocVien KetQua[], int* SoKetQua) {
+    *SoKetQua = 0;
+
+    for (int i = 0; i < SoLuong; i++)
+        if (DanhSach[i].NgaySinh.Ngay == Ngay && DanhSach[i].NgaySinh.Thang == Thang)
+            KetQua[(*SoKetQua)++] = DanhSach[i];
 }

@@ -226,14 +226,13 @@ int LaNamNhuan(int Nam) {
     return Nam % 4 == 0;
 }
 
-// Kiem tra ngay sinh hop le (ngay/thang/nam dung va nam < 2008)
-int KiemTraNgaySinhHopLe(Date NgaySinh) {
+// Kiem tra ngay/thang/nam co ton tai tren lich
+int KiemTraNgayThangNamHopLe(Date NgaySinh) {
     int SoNgayTrongThang[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
     if (LaNamNhuan(NgaySinh.Nam)) SoNgayTrongThang[1] = 29;
     if (NgaySinh.Thang > 0 && NgaySinh.Thang <= 12)
         if (NgaySinh.Ngay > 0 && NgaySinh.Ngay <= SoNgayTrongThang[NgaySinh.Thang - 1])
-            if (NgaySinh.Nam < 2008)
-                return 1;
+            return 1;
     return 0;
 }
 
@@ -293,7 +292,7 @@ int NhapNgaySinhHopLe(Date* NgaySinh) {
         if (NgaySinh->Nam < 1900 || NgaySinh->Nam > 2026) {
             printf("Nam phai tu 1900 den 2026. Vui long nhap lai ngay sinh.\n"); continue;
         }
-        if (KiemTraNgaySinhHopLe(*NgaySinh)) return 1;
+        if (KiemTraNgayThangNamHopLe(*NgaySinh) && NgaySinh->Nam < 2008) return 1;
         printf("Ngay thang khong hop le. Vui long nhap lai ngay sinh.\n");
     }
 }
