@@ -71,56 +71,77 @@ void ChoPhimEscQuayLai(void) {
     } while (Phim != 27);
 }
 
-// Menu dieu huong bang phim mui ten: ↑↓ chon, ENTER xac nhan, ESC thoat, phim so nhay nhanh
-// DongBatDau: dong bat dau in menu (0-based). Tra ve chi so chon (0-based), -1 neu ESC
+// Cac ma phim dung trong menu
+#define PHIM_ENTER       13
+#define PHIM_ESC         27
+#define PHIM_MUI_TEN     224
+#define PHIM_LEN         72
+#define PHIM_XUONG       80
+#define CHIEU_RONG_MENU  48
+
+static void InDongMenu(int Dong, const char* NoiDung, int DangDuocChon) {
+    GotoXY(0, Dong);
+    DatMauSac(DangDuocChon ? MAU_DONG_CHON : MAU_MAC_DINH);
+    printf("  %-*s", CHIEU_RONG_MENU, NoiDung);
+}
+
+static void CapNhatDongDangChon(int DongBatDau, const char* CacLuaChon[],
+                                int ViTriCu, int ViTriMoi) {
+    if (ViTriCu == ViTriMoi) return;
+
+    InDongMenu(DongBatDau + ViTriCu, CacLuaChon[ViTriCu], 0);
+    InDongMenu(DongBatDau + ViTriMoi, CacLuaChon[ViTriMoi], 1);
+}
+
+// Menu dieu huong bang phim mui ten: len/xuong chon, ENTER xac nhan, ESC thoat.
+// DongBatDau: dong bat dau in menu (0-based). Tra ve chi so chon (0-based), -1 neu ESC.
 int ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* ThongTinBoSung) {
-    int LienTiep = 0;
-    int Cu = 0;
-    int DongThongTin = DongBatDau;
+    int ViTriDangChon = 0;
 
     if (ThongTinBoSung != NULL) {
         DatMauSac(MAU_TIEU_DE);
-        GotoXY(0, DongThongTin);
+        GotoXY(0, DongBatDau);
         printf("  %s\n", ThongTinBoSung);
         DongBatDau++;
     }
 
     for (int i = 0; i < SoLuong; i++) {
-        GotoXY(0, DongBatDau + i);
-        if (i == LienTiep) DatMauSac(MAU_DONG_CHON);
-        else DatMauMacDinh();
-        printf("  %-48s", CacLuaChon[i]);
+        InDongMenu(DongBatDau + i, CacLuaChon[i], i == ViTriDangChon);
     }
 
     while (1) {
         int Phim = _getch();
-        if (Phim == 224) {
-            Phim = _getch();
-            Cu = LienTiep;
-            if (Phim == 72) LienTiep = (LienTiep - 1 + SoLuong) % SoLuong;
-            else if (Phim == 80) LienTiep = (LienTiep + 1) % SoLuong;
-            if (LienTiep != Cu) {
-                GotoXY(0, DongBatDau + Cu);
-                DatMauMacDinh();
-                printf("  %-48s", CacLuaChon[Cu]);
-                GotoXY(0, DongBatDau + LienTiep);
-                DatMauSac(MAU_DONG_CHON);
-                printf("  %-48s", CacLuaChon[LienTiep]);
-            }
-        } else if (Phim == 13) {
+
+        if (Phim == PHIM_ENTER) {
             DatMauMacDinh();
             printf("\n");
-            return LienTiep;
-        } else if (Phim == 27) {
+            return ViTriDangChon;
+        }
+
+        if (Phim == PHIM_ESC) {
             DatMauMacDinh();
             return -1;
-        } else if (Phim >= '1' && Phim <= '9') {
-            int ChiSo = Phim - '1';
-            if (ChiSo < SoLuong) {
+        }
+
+        if (Phim >= '1' && Phim <= '9') {
+            int ViTriTheoSo = Phim - '1';
+            if (ViTriTheoSo < SoLuong) {
                 DatMauMacDinh();
                 printf("\n");
-                return ChiSo;
+                return ViTriTheoSo;
             }
+        }
+
+        if (Phim == PHIM_MUI_TEN) {
+            int PhimMuiTen = _getch();
+            int ViTriCu = ViTriDangChon;
+
+            if (PhimMuiTen == PHIM_LEN)
+                ViTriDangChon = (ViTriDangChon - 1 + SoLuong) % SoLuong;
+            else if (PhimMuiTen == PHIM_XUONG)
+                ViTriDangChon = (ViTriDangChon + 1) % SoLuong;
+
+            CapNhatDongDangChon(DongBatDau, CacLuaChon, ViTriCu, ViTriDangChon);
         }
     }
 }

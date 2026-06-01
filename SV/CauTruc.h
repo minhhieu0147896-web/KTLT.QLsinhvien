@@ -43,6 +43,14 @@ typedef struct {
     float DiemTrungBinhTichLuy;
 } HocVien;
 
+typedef enum {
+    KHOA_MA_LOP = 1,
+    KHOA_MA_HOC_VIEN,
+    KHOA_HO_TEN,
+    KHOA_NGAY_SINH,
+    KHOA_DIEM_TBTL
+} KhoaHocVien;
+
 // ============================================================
 // TIEN ICH (TienIch.cpp)
 // ============================================================
@@ -97,5 +105,11 @@ void   XuLyMenuInDanhSach(const char* TenTep);
 void   XuLyMenuSapXep(const char* TenTep);
 void   XuLyMenuTimKiem(const char* TenTep);
 void   XuLyMenuThongKe(const char* TenTep);
+
+// ============================================================
+// THONG KE (ThongKe.cpp)
+// ============================================================
+void   ThongKeSoLuongTheoLop(HocVien DanhSach[], int SoLuong);
+void   ThongKeXepLoaiTheoLop(HocVien DanhSach[], int SoLuong);
 
 #endif

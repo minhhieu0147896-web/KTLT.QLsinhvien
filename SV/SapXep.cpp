@@ -7,13 +7,18 @@
 // So sanh 2 hoc vien theo khoa. Tra ve 1 neu A < B (dung de sap tang dan)
 int SoSanhHocVien(HocVien A, HocVien B, int Khoa) {
     switch (Khoa) {
-    case '1': return strcmp(A.MaHocVien, B.MaHocVien) < 0;
-    case '2': return strcmp(A.HoTen, B.HoTen) < 0;
-    case '3':
+    case KHOA_MA_LOP:
+        return strcmp(A.MaLop, B.MaLop) < 0;
+    case KHOA_MA_HOC_VIEN:
+        return strcmp(A.MaHocVien, B.MaHocVien) < 0;
+    case KHOA_HO_TEN:
+        return strcmp(A.HoTen, B.HoTen) < 0;
+    case KHOA_NGAY_SINH:
         if (A.NgaySinh.Nam != B.NgaySinh.Nam) return A.NgaySinh.Nam < B.NgaySinh.Nam;
         if (A.NgaySinh.Thang != B.NgaySinh.Thang) return A.NgaySinh.Thang < B.NgaySinh.Thang;
         return A.NgaySinh.Ngay < B.NgaySinh.Ngay;
-    case '4': return A.DiemTrungBinhTichLuy < B.DiemTrungBinhTichLuy;
+    case KHOA_DIEM_TBTL:
+        return A.DiemTrungBinhTichLuy < B.DiemTrungBinhTichLuy;
     }
     return 0;
 }
@@ -38,7 +43,7 @@ void SapXepChen(HocVien DanhSach[], int SoLuong, int Khoa) {
     }
 }
 
-// Quicksort: chon chot → phan hoach → de quy 2 ben
+// Quicksort: chon chot -> phan hoach -> de quy 2 ben
 void SapXepNhanh(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
     if (Trai >= Phai) return;
     HocVien Chot = DanhSach[Phai];
@@ -51,7 +56,7 @@ void SapXepNhanh(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
     SapXepNhanh(DanhSach, ViTriChot + 1, Phai, Khoa);
 }
 
-// Mergesort: chia doi → de quy → tron
+// Mergesort: chia doi -> de quy -> tron
 static void Tron(HocVien DanhSach[], int Trai, int Giua, int Phai, int Khoa) {
     int n1 = Giua - Trai + 1, n2 = Phai - Giua;
     HocVien* L = (HocVien*)malloc(n1 * sizeof(HocVien));

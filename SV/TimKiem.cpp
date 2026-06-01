@@ -7,17 +7,20 @@
 // So sanh 1 hoc vien voi gia tri can tim. Tra ve 0 neu khop, <0 neu be hon, >0 neu lon hon
 static int SoSanhTimKiem(HocVien HV, const char* GiaTri, int Khoa) {
     switch (Khoa) {
-    case '1': return strcmp(HV.MaLop, GiaTri);
-    case '2': return strcmp(HV.MaHocVien, GiaTri);
-    case '3': return strcmp(HV.HoTen, GiaTri);
-    case '4': {
+    case KHOA_MA_LOP:
+        return strcmp(HV.MaLop, GiaTri);
+    case KHOA_MA_HOC_VIEN:
+        return strcmp(HV.MaHocVien, GiaTri);
+    case KHOA_HO_TEN:
+        return strcmp(HV.HoTen, GiaTri);
+    case KHOA_NGAY_SINH: {
         int d, m, y;
         if (sscanf_s(GiaTri, "%d/%d/%d", &d, &m, &y) != 3) return -1;
         if (HV.NgaySinh.Nam != y) return (HV.NgaySinh.Nam < y) ? -1 : 1;
         if (HV.NgaySinh.Thang != m) return (HV.NgaySinh.Thang < m) ? -1 : 1;
         return (HV.NgaySinh.Ngay != d) ? ((HV.NgaySinh.Ngay < d) ? -1 : 1) : 0;
     }
-    case '5': {
+    case KHOA_DIEM_TBTL: {
         float d;
         if (sscanf_s(GiaTri, "%f", &d) != 1) return -1;
         if (HV.DiemTrungBinhTichLuy < d) return -1;
@@ -36,7 +39,7 @@ void TimKiemTuanTu(HocVien DanhSach[], int SoLuong, const char* GiaTri, int Khoa
             KetQua[(*SoKetQua)++] = DanhSach[i];
 }
 
-// Tim kiem nhi phan: sap xep ban sao → binary search → lan 2 ben lay het
+// Tim kiem nhi phan: sap xep ban sao -> binary search -> lan 2 ben lay het
 void TimKiemNhiPhan(HocVien DanhSach[], int SoLuong, const char* GiaTri, int Khoa,
                     HocVien KetQua[], int* SoKetQua) {
     *SoKetQua = 0;
