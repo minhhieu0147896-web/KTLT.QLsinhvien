@@ -61,7 +61,7 @@ void   GotoXY(int X, int Y);
 void   XoaManHinh();
 void   InTieuDe(const char* TieuDe);
 void   ChoPhimEscQuayLai();
-int    ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* ThongTinBoSung);
+int    ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* ThongTinBoSung, int* ViTriLuuVet);
 
 int    NhapDongCoEsc(const char* Nhan, char* BoDem, int KichThuoc);
 int    NhapHoTenChuanHoa(const char* Nhan, char* BoDem, int KichThuoc);

@@ -97,9 +97,13 @@ static void CapNhatDongDangChon(int DongBatDau, const char* CacLuaChon[],
 }
 
 // Menu dieu huong bang phim mui ten: len/xuong chon, ENTER xac nhan, ESC thoat.
+// ViTriLuuVet giup menu mo lai o dung lua chon truoc do.
 // Tra ve dung so thu tu hien tren menu: 1..SoLuong, 0 neu bam phim 0, -1 neu ESC.
-int ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* ThongTinBoSung) {
+int ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* ThongTinBoSung, int* ViTriLuuVet) {
     int ViTriDangChon = 0;
+
+    if (ViTriLuuVet != NULL && *ViTriLuuVet >= 0 && *ViTriLuuVet < SoLuong)
+        ViTriDangChon = *ViTriLuuVet;
 
     if (ThongTinBoSung != NULL) {
         DatMauSac(MAU_TIEU_DE);
@@ -116,6 +120,8 @@ int ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* 
         int Phim = _getch();
 
         if (Phim == PHIM_ENTER) {
+            if (ViTriLuuVet != NULL)
+                *ViTriLuuVet = ViTriDangChon;
             DatMauMacDinh();
             printf("\n");
             return ViTriDangChon + 1;
@@ -135,6 +141,8 @@ int ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* 
         if (Phim >= '1' && Phim <= '9') {
             int SoDuocChon = Phim - '0';
             if (SoDuocChon <= SoLuong) {
+                if (ViTriLuuVet != NULL)
+                    *ViTriLuuVet = SoDuocChon - 1;
                 DatMauMacDinh();
                 printf("\n");
                 return SoDuocChon;

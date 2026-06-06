@@ -6,6 +6,7 @@
 
 int main(void) {
     int DangChay = 1;
+    int ViTriMenuChinh = 0;
     const char* TenTepNhiPhan = "HocVien.dat";
 
     const char* MenuChinh[] = {
@@ -19,7 +20,7 @@ int main(void) {
 
     while (DangChay) {
         InTieuDe("MENU CHINH");
-        int Chon = ChonMenu(6, MenuChinh, 6, NULL);
+        int Chon = ChonMenu(6, MenuChinh, 6, NULL, &ViTriMenuChinh);
         switch (Chon) {
         case 1: XuLyThemHoSo(TenTepNhiPhan);       break;
         case 2: XuLyMenuInDanhSach(TenTepNhiPhan); break;

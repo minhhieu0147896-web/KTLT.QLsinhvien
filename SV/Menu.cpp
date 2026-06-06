@@ -51,6 +51,8 @@ void XuLyThemHoSo(const char* TenTep) {
 
 // M2: Xu ly menu in danh sach (toan bo / theo lop)
 void XuLyMenuInDanhSach(const char* TenTep) {
+    int ViTriMenuIn = 0;
+
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
@@ -61,7 +63,7 @@ void XuLyMenuInDanhSach(const char* TenTep) {
         };
 
         InTieuDe("M2. IN DANH SACH");
-        int Chon = ChonMenu(6, MenuIn, 2, NULL);
+        int Chon = ChonMenu(6, MenuIn, 2, NULL, &ViTriMenuIn);
         if (Chon <= 0) return;
 
         if (Chon == 1) {
@@ -91,6 +93,9 @@ void XuLyMenuInDanhSach(const char* TenTep) {
 
 // M3: Xu ly menu sap xep (chon thuat toan -> chon khoa -> sap xep -> hoi luu)
 void XuLyMenuSapXep(const char* TenTep) {
+    int ViTriMenuThuatToan = 0;
+    int ViTriMenuKhoaSapXep = 0;
+
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
@@ -106,7 +111,7 @@ void XuLyMenuSapXep(const char* TenTep) {
         const char* MenuThuatToan[] = { "1. Sap xep chon", "2. Sap xep chen", "3. Quicksort", "4. Mergesort" };
         InTieuDe("M3. SAP XEP");
         printf("  So hoc vien hien co trong file: %d\n", SoLuongHocVien);
-        int ChonTT = ChonMenu(7, MenuThuatToan, 4, NULL);
+        int ChonTT = ChonMenu(7, MenuThuatToan, 4, NULL, &ViTriMenuThuatToan);
         if (ChonTT <= 0) return;
 
         // Menu cap 2: chon khoa
@@ -116,7 +121,7 @@ void XuLyMenuSapXep(const char* TenTep) {
         int ViTriTT = ChonTT - 1;
         InTieuDe("M3. SAP XEP - CHON KHOA");
         printf("  Thuat toan da chon: %s\n", TenTT[ViTriTT]);
-        int ChonKhoa = ChonMenu(7, MenuKhoa, 4, NULL);
+        int ChonKhoa = ChonMenu(7, MenuKhoa, 4, NULL, &ViTriMenuKhoaSapXep);
         if (ChonKhoa <= 0) continue;
 
         // Thuc hien sap xep
@@ -199,137 +204,175 @@ static void XuLyTimKiemTheoNgaySinh(HocVien DanhSachHocVien[], int SoLuongHocVie
         "5. Tim theo ngay va thang"
     };
 
-    HocVien KetQua[SoLuongHocVienToiDa];
-    int SoKetQua = 0;
-    int ChonNgaySinh;
+    int ViTriMenuNgaySinh = 0;
 
-    InTieuDe("M4. TIM KIEM THEO NGAY SINH");
-    printf("  Cac muc 2-5 loc theo tung phan cua ngay sinh.\n");
-    ChonNgaySinh = ChonMenu(8, MenuNgaySinh, 5, NULL);
-    if (ChonNgaySinh <= 0) return;
+    while (1) {
+        HocVien KetQua[SoLuongHocVienToiDa];
+        int SoKetQua = 0;
+        int ChonNgaySinh;
 
-    InTieuDe("M4. TIM KIEM THEO NGAY SINH");
+        // Buoc 1: Chon cach tim theo ngay sinh
+        InTieuDe("M4. TIM KIEM THEO NGAY SINH");
+        printf("  Cac muc 2-5 loc theo tung phan cua ngay sinh.\n");
+        ChonNgaySinh = ChonMenu(8, MenuNgaySinh, 5, NULL, &ViTriMenuNgaySinh);
+        if (ChonNgaySinh <= 0) return;
 
-    if (ChonNgaySinh == 1) {
-        Date NgaySinhCanTim;
-        if (!NhapNgaySinhDayDuCanTim(&NgaySinhCanTim)) return;
+        InTieuDe("M4. TIM KIEM THEO NGAY SINH");
 
-        if (ChonTK == 1)
-            TimKiemTuanTuTheoNgaySinh(DanhSachHocVien, SoLuongHocVien, NgaySinhCanTim, KetQua, &SoKetQua);
+        // Buoc 2: Nhap gia tri can tim va goi ham tim kiem phu hop
+        switch (ChonNgaySinh) {
+        case 1: {
+            Date NgaySinhCanTim;
+            if (!NhapNgaySinhDayDuCanTim(&NgaySinhCanTim)) continue;
+
+            if (ChonTK == 1)
+                TimKiemTuanTuTheoNgaySinh(DanhSachHocVien, SoLuongHocVien, NgaySinhCanTim, KetQua, &SoKetQua);
+            else
+                TimKiemNhiPhanTheoNgaySinh(DanhSachHocVien, SoLuongHocVien, NgaySinhCanTim, KetQua, &SoKetQua);
+
+            InTieuDe("M4. TIM KIEM - KET QUA");
+            printf("Thuat toan: %s\n", TenThuatToan);
+            printf("Kieu tim   : Dung ngay/thang/nam\n");
+            printf("Gia tri    : ");
+            InNgaySinh(NgaySinhCanTim);
+            printf("\n");
+            break;
+        }
+        case 2: {
+            int Ngay;
+            if (!NhapNgayCanTim(&Ngay)) continue;
+            TimKiemTheoNgayTrongThang(DanhSachHocVien, SoLuongHocVien, Ngay, KetQua, &SoKetQua);
+
+            InTieuDe("M4. TIM KIEM - KET QUA");
+            printf("Thuat toan: Tim kiem tuan tu\n");
+            printf("Kieu tim   : Theo ngay trong thang\n");
+            printf("Gia tri    : ngay %d\n", Ngay);
+            break;
+        }
+        case 3: {
+            int Thang;
+            if (!NhapThangCanTim(&Thang)) continue;
+            TimKiemTheoThangSinh(DanhSachHocVien, SoLuongHocVien, Thang, KetQua, &SoKetQua);
+
+            InTieuDe("M4. TIM KIEM - KET QUA");
+            printf("Thuat toan: Tim kiem tuan tu\n");
+            printf("Kieu tim   : Theo thang sinh\n");
+            printf("Gia tri    : thang %d\n", Thang);
+            break;
+        }
+        case 4: {
+            int Nam;
+            if (!NhapNamCanTim(&Nam)) continue;
+            TimKiemTheoNamSinh(DanhSachHocVien, SoLuongHocVien, Nam, KetQua, &SoKetQua);
+
+            InTieuDe("M4. TIM KIEM - KET QUA");
+            printf("Thuat toan: Tim kiem tuan tu\n");
+            printf("Kieu tim   : Theo nam sinh\n");
+            printf("Gia tri    : nam %d\n", Nam);
+            break;
+        }
+        case 5: {
+            int Ngay;
+            int Thang;
+            if (!NhapNgayCanTim(&Ngay)) continue;
+            if (!NhapThangCanTim(&Thang)) continue;
+            TimKiemTheoNgayVaThang(DanhSachHocVien, SoLuongHocVien, Ngay, Thang, KetQua, &SoKetQua);
+
+            InTieuDe("M4. TIM KIEM - KET QUA");
+            printf("Thuat toan: Tim kiem tuan tu\n");
+            printf("Kieu tim   : Theo ngay va thang\n");
+            printf("Gia tri    : ngay %d, thang %d\n", Ngay, Thang);
+            break;
+        }
+        }
+
+        // Buoc 3: In ket qua chung cho moi cach tim
+        printf("Ket qua    : tim thay %d hoc vien\n\n", SoKetQua);
+        if (SoKetQua > 0)
+            InBangHocVien(KetQua, SoKetQua);
         else
-            TimKiemNhiPhanTheoNgaySinh(DanhSachHocVien, SoLuongHocVien, NgaySinhCanTim, KetQua, &SoKetQua);
-
-        InTieuDe("M4. TIM KIEM - KET QUA");
-        printf("Thuat toan: %s\n", TenThuatToan);
-        printf("Kieu tim   : Dung ngay/thang/nam\n");
-        printf("Gia tri    : ");
-        InNgaySinh(NgaySinhCanTim);
-        printf("\n");
-    } else if (ChonNgaySinh == 2) {
-        int Ngay;
-        if (!NhapNgayCanTim(&Ngay)) return;
-        TimKiemTheoNgayTrongThang(DanhSachHocVien, SoLuongHocVien, Ngay, KetQua, &SoKetQua);
-
-        InTieuDe("M4. TIM KIEM - KET QUA");
-        printf("Thuat toan: Tim kiem tuan tu\n");
-        printf("Kieu tim   : Theo ngay trong thang\n");
-        printf("Gia tri    : ngay %d\n", Ngay);
-    } else if (ChonNgaySinh == 3) {
-        int Thang;
-        if (!NhapThangCanTim(&Thang)) return;
-        TimKiemTheoThangSinh(DanhSachHocVien, SoLuongHocVien, Thang, KetQua, &SoKetQua);
-
-        InTieuDe("M4. TIM KIEM - KET QUA");
-        printf("Thuat toan: Tim kiem tuan tu\n");
-        printf("Kieu tim   : Theo thang sinh\n");
-        printf("Gia tri    : thang %d\n", Thang);
-    } else if (ChonNgaySinh == 4) {
-        int Nam;
-        if (!NhapNamCanTim(&Nam)) return;
-        TimKiemTheoNamSinh(DanhSachHocVien, SoLuongHocVien, Nam, KetQua, &SoKetQua);
-
-        InTieuDe("M4. TIM KIEM - KET QUA");
-        printf("Thuat toan: Tim kiem tuan tu\n");
-        printf("Kieu tim   : Theo nam sinh\n");
-        printf("Gia tri    : nam %d\n", Nam);
-    } else {
-        int Ngay;
-        int Thang;
-        if (!NhapNgayCanTim(&Ngay)) return;
-        if (!NhapThangCanTim(&Thang)) return;
-        TimKiemTheoNgayVaThang(DanhSachHocVien, SoLuongHocVien, Ngay, Thang, KetQua, &SoKetQua);
-
-        InTieuDe("M4. TIM KIEM - KET QUA");
-        printf("Thuat toan: Tim kiem tuan tu\n");
-        printf("Kieu tim   : Theo ngay va thang\n");
-        printf("Gia tri    : ngay %d, thang %d\n", Ngay, Thang);
+            printf("Khong tim thay hoc vien nao khop.\n");
+        ChoPhimEscQuayLai();
     }
-
-    printf("Ket qua    : tim thay %d hoc vien\n\n", SoKetQua);
-    if (SoKetQua > 0)
-        InBangHocVien(KetQua, SoKetQua);
-    else
-        printf("Khong tim thay hoc vien nao khop.\n");
-    ChoPhimEscQuayLai();
 }
 
 // M4: Xu ly menu tim kiem (chon thuat toan -> chon khoa -> nhap gia tri tim)
 void XuLyMenuTimKiem(const char* TenTep) {
+    int ViTriMenuTimKiem = 0;
+    int ViTriMenuKhoaTimKiem = 0;
+
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
 
-        // Menu cap 1: chon thuat toan
+        // Buoc 1: Chon thuat toan tim kiem
         const char* MenuTK[] = { "1. Tim kiem tuan tu", "2. Tim kiem nhi phan" };
+        const char* TenThuatToan[] = { "Tim kiem tuan tu", "Tim kiem nhi phan" };
+
         InTieuDe("M4. TIM KIEM");
         printf("  So hoc vien hien co trong file: %d\n", SoLuongHocVien);
-        int ChonTK = ChonMenu(7, MenuTK, 2, NULL);
+        int ChonTK = ChonMenu(7, MenuTK, 2, NULL, &ViTriMenuTimKiem);
         if (ChonTK <= 0) return;
 
-        // Menu cap 2: chon khoa
-        const char* MenuKhoaTK[] = { "1. Ma lop", "2. Ma hoc vien", "3. Ho va ten", "4. Ngay sinh", "5. Diem trung binh tich luy" };
-        const char* TenThuatToan[] = { "Tim kiem tuan tu", "Tim kiem nhi phan" };
-        int ViTriTK = ChonTK - 1;
-        InTieuDe("M4. TIM KIEM - CHON KHOA");
-        printf("  Thuat toan da chon: %s\n", TenThuatToan[ViTriTK]);
-        int ChonKhoaTK = ChonMenu(7, MenuKhoaTK, 5, NULL);
-        if (ChonKhoaTK <= 0) continue;
+        int ViTriThuatToan = ChonTK - 1;
 
-        // Nhap gia tri tim kiem
-        char GiaTri[SoKyTuToiDaHoTen];
-        int ViTriKhoaTK = ChonKhoaTK - 1;
-        int KhoaTimKiem = KHOA_MA_LOP + ViTriKhoaTK;
+        while (1) {
+            // Buoc 2: Chon thong tin muon tim
+            const char* MenuKhoaTK[] = { "1. Ma lop", "2. Ma hoc vien", "3. Ho va ten", "4. Ngay sinh", "5. Diem trung binh tich luy" };
+            const char* TenKhoa[] = { "Ma lop", "Ma hoc vien", "Ho va ten", "Ngay sinh", "Diem TBTL" };
 
-        if (KhoaTimKiem == KHOA_NGAY_SINH) {
-            XuLyTimKiemTheoNgaySinh(DanhSachHocVien, SoLuongHocVien, ChonTK, TenThuatToan[ViTriTK]);
-            continue;
+            InTieuDe("M4. TIM KIEM - CHON KHOA");
+            printf("  Thuat toan da chon: %s\n", TenThuatToan[ViTriThuatToan]);
+            int ChonKhoaTK = ChonMenu(7, MenuKhoaTK, 5, NULL, &ViTriMenuKhoaTimKiem);
+            if (ChonKhoaTK <= 0) break;
+
+            int ViTriKhoaTK = ChonKhoaTK - 1;
+            int KhoaTimKiem = KHOA_MA_LOP + ViTriKhoaTK;
+
+            // Ngay sinh co menu rieng vi co nhieu cach tim: theo ngay, thang, nam...
+            if (KhoaTimKiem == KHOA_NGAY_SINH) {
+                XuLyTimKiemTheoNgaySinh(DanhSachHocVien, SoLuongHocVien, ChonTK, TenThuatToan[ViTriThuatToan]);
+                continue;
+            }
+
+            // Buoc 3: Nhap gia tri can tim
+            char GiaTri[SoKyTuToiDaHoTen];
+            InTieuDe("M4. TIM KIEM - NHAP GIA TRI");
+            printf("Nhan ESC de huy.\n\n");
+            if (!NhapDongCoEsc("Gia tri can tim: ", GiaTri, sizeof(GiaTri))) continue;
+
+            // Buoc 4: Thuc hien tim kiem
+            HocVien KetQua[SoLuongHocVienToiDa];
+            int SoKetQua = 0;
+
+            if (ChonTK == 1)
+                TimKiemTuanTu(DanhSachHocVien, SoLuongHocVien, GiaTri, KhoaTimKiem, KetQua, &SoKetQua);
+            else
+                TimKiemNhiPhan(DanhSachHocVien, SoLuongHocVien, GiaTri, KhoaTimKiem, KetQua, &SoKetQua);
+
+            // Buoc 5: Hien thi ket qua
+            int TimChuoiMotPhan = (KhoaTimKiem == KHOA_MA_LOP ||
+                                   KhoaTimKiem == KHOA_MA_HOC_VIEN ||
+                                   KhoaTimKiem == KHOA_HO_TEN);
+
+            InTieuDe("M4. TIM KIEM - KET QUA");
+            printf("Thuat toan: %s\n", TenThuatToan[ViTriThuatToan]);
+            if (ChonTK == 2 && TimChuoiMotPhan)
+                printf("Ghi chu    : Tim chuoi mot phan nen chuong trinh duyet tuan tu de khong bo sot.\n");
+            printf("Khoa       : %s\n", TenKhoa[ViTriKhoaTK]);
+            printf("Gia tri    : %s\n", GiaTri);
+            printf("Ket qua    : tim thay %d hoc vien\n\n", SoKetQua);
+            if (SoKetQua > 0) InBangHocVien(KetQua, SoKetQua);
+            else printf("Khong tim thay hoc vien nao khop.\n");
+            ChoPhimEscQuayLai();
         }
-
-        InTieuDe("M4. TIM KIEM - NHAP GIA TRI");
-        printf("Nhan ESC de huy.\n\n");
-        if (!NhapDongCoEsc("Gia tri can tim: ", GiaTri, sizeof(GiaTri))) continue;
-
-        // Thuc hien tim kiem
-        HocVien KetQua[SoLuongHocVienToiDa];
-        int SoKetQua = 0;
-        if (ChonTK == 1) TimKiemTuanTu(DanhSachHocVien, SoLuongHocVien, GiaTri, KhoaTimKiem, KetQua, &SoKetQua);
-        else TimKiemNhiPhan(DanhSachHocVien, SoLuongHocVien, GiaTri, KhoaTimKiem, KetQua, &SoKetQua);
-
-        // Hien thi ket qua
-        const char* TenKhoa[] = { "Ma lop", "Ma hoc vien", "Ho va ten", "Ngay sinh", "Diem TBTL" };
-        InTieuDe("M4. TIM KIEM - KET QUA");
-        printf("Thuat toan: %s\n", TenThuatToan[ViTriTK]);
-        printf("Khoa       : %s\n", TenKhoa[ViTriKhoaTK]);
-        printf("Gia tri    : %s\n", GiaTri);
-        printf("Ket qua    : tim thay %d hoc vien\n\n", SoKetQua);
-        if (SoKetQua > 0) InBangHocVien(KetQua, SoKetQua);
-        else printf("Khong tim thay hoc vien nao khop.\n");
-        ChoPhimEscQuayLai();
     }
 }
 
 // M5: Xu ly menu thong ke (so luong theo lop / ty le xep loai)
 void XuLyMenuThongKe(const char* TenTep) {
+    int ViTriMenuThongKe = 0;
+
     while (1) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
@@ -337,7 +380,7 @@ void XuLyMenuThongKe(const char* TenTep) {
         const char* MenuTK[] = { "1. So luong sinh vien theo lop", "2. Ty le xep loai hoc tap theo lop" };
         InTieuDe("M5. THONG KE");
         printf("  So hoc vien hien co trong file: %d\n", SoLuongHocVien);
-        int Chon = ChonMenu(7, MenuTK, 2, NULL);
+        int Chon = ChonMenu(7, MenuTK, 2, NULL, &ViTriMenuThongKe);
         if (Chon <= 0) return;
 
         InTieuDe("M5. THONG KE");

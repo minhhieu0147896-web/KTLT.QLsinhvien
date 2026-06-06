@@ -79,15 +79,39 @@ static int SoSanhDiem(float A, float B) {
     return 0;
 }
 
-// So sanh 1 hoc vien voi gia tri can tim. Tra ve 0 neu khop, <0 neu be hon, >0 neu lon hon
+// So sanh 1 hoc vien voi gia tri can tim.
+// - Ma lop, ma hoc vien, ho ten: khop neu co chua chuoi can tim, khong phan biet hoa/thuong.
+// - Ngay sinh, diem: so sanh dung gia tri.
+// Tra ve 0 neu khop.
 static int SoSanhTimKiem(HocVien HV, const char* GiaTri, int Khoa) {
+    const char* ChuoiTrongDanhSach = NULL;
+
     switch (Khoa) {
     case KHOA_MA_LOP:
-        return strcmp(HV.MaLop, GiaTri);
     case KHOA_MA_HOC_VIEN:
-        return strcmp(HV.MaHocVien, GiaTri);
     case KHOA_HO_TEN:
-        return strcmp(HV.HoTen, GiaTri);
+        if (Khoa == KHOA_MA_LOP)
+            ChuoiTrongDanhSach = HV.MaLop;
+        else if (Khoa == KHOA_MA_HOC_VIEN)
+            ChuoiTrongDanhSach = HV.MaHocVien;
+        else
+            ChuoiTrongDanhSach = HV.HoTen;
+
+        if (GiaTri[0] == '\0') return 1;
+
+        for (int i = 0; ChuoiTrongDanhSach[i] != '\0'; i++) {
+            int j = 0;
+
+            while (GiaTri[j] != '\0' &&
+                   ChuoiTrongDanhSach[i + j] != '\0' &&
+                   tolower((unsigned char)ChuoiTrongDanhSach[i + j]) == tolower((unsigned char)GiaTri[j])) {
+                j++;
+            }
+
+            if (GiaTri[j] == '\0') return 0;
+        }
+
+        return 1;
     case KHOA_NGAY_SINH: {
         int d, m, y;
         Date NgayCanTim;
@@ -120,6 +144,13 @@ void TimKiemNhiPhan(HocVien DanhSach[], int SoLuong, const char* GiaTri, int Kho
                     HocVien KetQua[], int* SoKetQua) {
     *SoKetQua = 0;
     if (SoLuong == 0) return;
+
+    // Tim kiem nhi phan chi phu hop voi gia tri can tim dung hoan toan.
+    // Voi chuoi khop mot phan, can duyet tuan tu de khong bo sot ket qua.
+    if (Khoa == KHOA_MA_LOP || Khoa == KHOA_MA_HOC_VIEN || Khoa == KHOA_HO_TEN) {
+        TimKiemTuanTu(DanhSach, SoLuong, GiaTri, Khoa, KetQua, SoKetQua);
+        return;
+    }
 
     HocVien* Ban = (HocVien*)malloc(SoLuong * sizeof(HocVien));
     if (!Ban) return;
