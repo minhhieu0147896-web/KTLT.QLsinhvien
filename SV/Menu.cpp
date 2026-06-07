@@ -4,8 +4,35 @@
 
 #include "CauTruc.h"
 
-// M1: Xu ly them moi ho so hoc vien (nhap -> xac nhan -> luu file)
-void XuLyThemHoSo(const char* TenTep) {
+static int TimViTriTheoMaHocVien(HocVien DanhSachHocVien[], int SoLuongHocVien, const char* MaHocVien) {
+    for (int i = 0; i < SoLuongHocVien; i++)
+        if (strcmp(DanhSachHocVien[i].MaHocVien, MaHocVien) == 0)
+            return i;
+    return -1;
+}
+
+static void InThongTinHocVienChiTiet(HocVien ThongTinHocVien) {
+    printf("Ma lop      : %s\n", ThongTinHocVien.MaLop);
+    printf("Ma hoc vien : %s\n", ThongTinHocVien.MaHocVien);
+    printf("Ho va ten   : %s\n", ThongTinHocVien.HoTen);
+    printf("Ngay sinh   : ");
+    InNgaySinh(ThongTinHocVien.NgaySinh);
+    printf("\n");
+    printf("Diem TBTL   : %.2f\n", ThongTinHocVien.DiemTrungBinhTichLuy);
+}
+
+static int XacNhanThaoTac(const char* NoiDung) {
+    printf("\n%s", NoiDung);
+    printf("\nNhan ENTER de xac nhan, ESC de huy.");
+
+    while (1) {
+        int Phim = _getch();
+        if (Phim == 13) return 1;
+        if (Phim == 27) return 0;
+    }
+}
+
+static void XuLyThemMoiHoSo(const char* TenTep) {
     HocVien DanhSachHocVien[SoLuongHocVienToiDa];
     HocVien HocVienTam = { "", "", "", { 0, 0, 0 }, 0 };
     int SoLuongHocVien;
@@ -30,11 +57,7 @@ void XuLyThemHoSo(const char* TenTep) {
     if (!NhapDiemHopLe(&HocVienTam.DiemTrungBinhTichLuy)) return;
 
     printf("\nThong tin vua nhap:\n");
-    printf("Ma lop      : %s\n", HocVienTam.MaLop);
-    printf("Ma hoc vien : %s\n", HocVienTam.MaHocVien);
-    printf("Ho va ten   : %s\n", HocVienTam.HoTen);
-    printf("Ngay sinh   : "); InNgaySinh(HocVienTam.NgaySinh); printf("\n");
-    printf("Diem TBTL   : %.2f\n", HocVienTam.DiemTrungBinhTichLuy);
+    InThongTinHocVienChiTiet(HocVienTam);
 
     if (!XacNhanThemHocVien()) return;
 
@@ -47,6 +70,161 @@ void XuLyThemHoSo(const char* TenTep) {
         printf("\nKhong ghi duoc file nhi phan.\n");
 
     ChoPhimEscQuayLai();
+}
+
+static void XuLySuaHoSo(const char* TenTep) {
+    HocVien DanhSachHocVien[SoLuongHocVienToiDa];
+    char MaHocVienCanSua[SoKyTuToiDaMaHocVien];
+    int SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
+    int ViTriCanSua;
+    int ViTriMenuTruongSua = 0;
+
+    if (SoLuongHocVien == 0) {
+        InTieuDe("M1. SUA HO SO");
+        printf("Danh sach hoc vien dang rong, khong co ho so de sua.\n");
+        ChoPhimEscQuayLai();
+        return;
+    }
+
+    InTieuDe("M1. SUA HO SO");
+    printf("Nhan ESC de quay lai menu quan ly ho so.\n\n");
+    if (!NhapDongCoEsc("Nhap ma hoc vien can sua: ", MaHocVienCanSua, sizeof(MaHocVienCanSua))) return;
+
+    ViTriCanSua = TimViTriTheoMaHocVien(DanhSachHocVien, SoLuongHocVien, MaHocVienCanSua);
+    if (ViTriCanSua < 0) {
+        printf("\nKhong tim thay hoc vien co ma %s.\n", MaHocVienCanSua);
+        ChoPhimEscQuayLai();
+        return;
+    }
+
+    while (1) {
+        const char* MenuTruongSua[] = {
+            "1. Sua ma lop",
+            "2. Sua ma hoc vien",
+            "3. Sua ho va ten",
+            "4. Sua ngay sinh",
+            "5. Sua diem trung binh tich luy"
+        };
+
+        InTieuDe("M1. SUA HO SO");
+        printf("Ho so hien tai:\n");
+        InThongTinHocVienChiTiet(DanhSachHocVien[ViTriCanSua]);
+        printf("\nChon thong tin muon sua.\n");
+
+        int ChonTruong = ChonMenu(14, MenuTruongSua, 5, NULL, &ViTriMenuTruongSua);
+        if (ChonTruong <= 0) return;
+
+        InTieuDe("M1. SUA HO SO");
+        printf("Nhan ESC de huy sua truong nay.\n\n");
+
+        // Sua tren ban tam truoc, chi luu vao danh sach that khi nguoi dung xac nhan.
+        HocVien HocVienTam = DanhSachHocVien[ViTriCanSua];
+
+        switch (ChonTruong) {
+        case 1:
+            if (!NhapDongCoEsc("Ma lop moi: ", HocVienTam.MaLop, sizeof(HocVienTam.MaLop))) continue;
+            break;
+        case 2: {
+            HocVien DanhSachKhac[SoLuongHocVienToiDa];
+            int SoLuongKhac = 0;
+
+            // Tao danh sach khong co hoc vien dang sua de kiem tra trung ma chinh xac.
+            for (int i = 0; i < SoLuongHocVien; i++)
+                if (i != ViTriCanSua)
+                    DanhSachKhac[SoLuongKhac++] = DanhSachHocVien[i];
+
+            if (!NhapMaHocVienHopLe(HocVienTam.MaHocVien, sizeof(HocVienTam.MaHocVien), DanhSachKhac, SoLuongKhac)) continue;
+            break;
+        }
+        case 3:
+            if (!NhapHoTenChuanHoa("Ho va ten moi: ", HocVienTam.HoTen, sizeof(HocVienTam.HoTen))) continue;
+            break;
+        case 4:
+            if (!NhapNgaySinhHopLe(&HocVienTam.NgaySinh)) continue;
+            break;
+        case 5:
+            if (!NhapDiemHopLe(&HocVienTam.DiemTrungBinhTichLuy)) continue;
+            break;
+        }
+
+        printf("\nHo so sau khi sua:\n");
+        InThongTinHocVienChiTiet(HocVienTam);
+
+        if (!XacNhanThaoTac("Ban co muon luu thay doi nay khong?")) continue;
+
+        DanhSachHocVien[ViTriCanSua] = HocVienTam;
+
+        if (GhiDanhSachVaoFile(TenTep, DanhSachHocVien, SoLuongHocVien))
+            printf("\nDa cap nhat ho so hoc vien.\n");
+        else
+            printf("\nLoi: Khong ghi duoc file.\n");
+
+        ChoPhimEscQuayLai();
+    }
+}
+
+static void XuLyXoaHoSo(const char* TenTep) {
+    HocVien DanhSachHocVien[SoLuongHocVienToiDa];
+    char MaHocVienCanXoa[SoKyTuToiDaMaHocVien];
+    int SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
+    int ViTriCanXoa;
+
+    if (SoLuongHocVien == 0) {
+        InTieuDe("M1. XOA HO SO");
+        printf("Danh sach hoc vien dang rong, khong co ho so de xoa.\n");
+        ChoPhimEscQuayLai();
+        return;
+    }
+
+    InTieuDe("M1. XOA HO SO");
+    printf("Nhan ESC de quay lai menu quan ly ho so.\n\n");
+    if (!NhapDongCoEsc("Nhap ma hoc vien can xoa: ", MaHocVienCanXoa, sizeof(MaHocVienCanXoa))) return;
+
+    ViTriCanXoa = TimViTriTheoMaHocVien(DanhSachHocVien, SoLuongHocVien, MaHocVienCanXoa);
+    if (ViTriCanXoa < 0) {
+        printf("\nKhong tim thay hoc vien co ma %s.\n", MaHocVienCanXoa);
+        ChoPhimEscQuayLai();
+        return;
+    }
+
+    printf("\nHo so se bi xoa:\n");
+    InThongTinHocVienChiTiet(DanhSachHocVien[ViTriCanXoa]);
+
+    if (!XacNhanThaoTac("Ban co chac muon xoa ho so nay khong?")) return;
+
+    for (int i = ViTriCanXoa; i < SoLuongHocVien - 1; i++)
+        DanhSachHocVien[i] = DanhSachHocVien[i + 1];
+    SoLuongHocVien--;
+
+    if (GhiDanhSachVaoFile(TenTep, DanhSachHocVien, SoLuongHocVien))
+        printf("\nDa xoa ho so hoc vien.\n");
+    else
+        printf("\nLoi: Khong ghi duoc file.\n");
+
+    ChoPhimEscQuayLai();
+}
+
+// M1: Menu quan ly ho so hoc vien (them / sua / xoa)
+void XuLyThemHoSo(const char* TenTep) {
+    int ViTriMenuHoSo = 0;
+
+    while (1) {
+        const char* MenuHoSo[] = {
+            "1. Them moi ho so",
+            "2. Sua ho so",
+            "3. Xoa ho so"
+        };
+
+        InTieuDe("M1. QUAN LY HO SO");
+        int Chon = ChonMenu(6, MenuHoSo, 3, NULL, &ViTriMenuHoSo);
+        if (Chon <= 0) return;
+
+        switch (Chon) {
+        case 1: XuLyThemMoiHoSo(TenTep); break;
+        case 2: XuLySuaHoSo(TenTep);     break;
+        case 3: XuLyXoaHoSo(TenTep);     break;
+        }
+    }
 }
 
 // M2: Xu ly menu in danh sach (toan bo / theo lop)

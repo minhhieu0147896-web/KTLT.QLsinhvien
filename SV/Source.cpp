@@ -10,7 +10,7 @@ int main(void) {
     const char* TenTepNhiPhan = "HocVien.dat";
 
     const char* MenuChinh[] = {
-        "1. Them moi ho so (M1)",
+        "1. Quan ly ho so (M1)",
         "2. In danh sach (M2)",
         "3. Sap xep (M3)",
         "4. Tim kiem (M4)",
