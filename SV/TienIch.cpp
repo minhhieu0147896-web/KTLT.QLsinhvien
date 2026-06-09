@@ -62,6 +62,37 @@ void InTieuDe(const char* TieuDe) {
     printf("\n");
 }
 
+void InDongPhanCach(int DoDai) {
+    DatMauSac(MAU_VIEN);
+    for (int i = 0; i < DoDai; i++) printf("-");
+    printf("\n");
+    DatMauMacDinh();
+}
+
+void InNhanMuc(const char* NoiDung) {
+    DatMauSac(MAU_TIEU_DE);
+    printf("[ %s ]\n", NoiDung);
+    DatMauMacDinh();
+}
+
+void InThongBaoThanhCong(const char* NoiDung) {
+    DatMauSac(MAU_THANH_CONG);
+    printf("%s\n", NoiDung);
+    DatMauMacDinh();
+}
+
+void InThongBaoLoi(const char* NoiDung) {
+    DatMauSac(MAU_LOI);
+    printf("%s\n", NoiDung);
+    DatMauMacDinh();
+}
+
+void InThongBaoGhiChu(const char* NoiDung) {
+    DatMauSac(MAU_TIEU_DE);
+    printf("%s\n", NoiDung);
+    DatMauMacDinh();
+}
+
 // Doi nguoi dung nhan ESC de quay lai menu truoc
 void ChoPhimEscQuayLai(void) {
     int Phim;
@@ -380,11 +411,17 @@ void InMotHocVien(HocVien ThongTinHocVien, int SoThuTu) {
 
 // In toan bo danh sach hoc vien dang bang co tieu de cot
 void InBangHocVien(HocVien DanhSachHocVien[], int SoLuongHocVien) {
-    if (SoLuongHocVien == 0) { printf("Danh sach hoc vien dang rong.\n"); return; }
+    if (SoLuongHocVien == 0) {
+        InThongBaoGhiChu("Danh sach hoc vien dang rong.");
+        return;
+    }
+
+    InDongPhanCach(79);
     printf("%-5s %-10s %-12s %-28s %-12s %s\n", "STT", "Ma lop", "Ma HV", "Ho ten", "Ngay sinh", "Diem");
-    printf("-------------------------------------------------------------------------------\n");
+    InDongPhanCach(79);
     for (int ViTri = 0; ViTri < SoLuongHocVien; ViTri++)
         InMotHocVien(DanhSachHocVien[ViTri], ViTri + 1);
+    InDongPhanCach(79);
 }
 
 // Xac nhan luu hoc vien: ENTER de luu, ESC de huy

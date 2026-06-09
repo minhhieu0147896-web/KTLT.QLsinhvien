@@ -69,16 +69,18 @@ void ThongKeSoLuongTheoLop(HocVien DanhSach[], int SoLuong) {
     int SoLop = 0;
 
     if (SoLuong == 0) {
-        printf("Danh sach hoc vien dang rong.\n");
+        InThongBaoGhiChu("Danh sach hoc vien dang rong.");
         return;
     }
 
     LapBangThongKeTheoLop(DanhSach, SoLuong, BangThongKe, &SoLop);
 
+    InDongPhanCach(36);
     printf("%-5s %-15s %s\n", "STT", "Ma lop", "So hoc vien");
-    printf("--------------------------------\n");
+    InDongPhanCach(36);
     for (int i = 0; i < SoLop; i++)
         printf("%-5d %-15s %d\n", i + 1, BangThongKe[i].MaLop, BangThongKe[i].TongSo);
+    InDongPhanCach(36);
 }
 
 void ThongKeXepLoaiTheoLop(HocVien DanhSach[], int SoLuong) {
@@ -87,21 +89,24 @@ void ThongKeXepLoaiTheoLop(HocVien DanhSach[], int SoLuong) {
     const char* TenLoai[] = { "Xuat sac", "Gioi", "Kha", "Trung binh", "Yeu" };
 
     if (SoLuong == 0) {
-        printf("Danh sach hoc vien dang rong.\n");
+        InThongBaoGhiChu("Danh sach hoc vien dang rong.");
         return;
     }
 
     LapBangThongKeTheoLop(DanhSach, SoLuong, BangThongKe, &SoLop);
 
     for (int i = 0; i < SoLop; i++) {
+        InNhanMuc("THONG KE THEO LOP");
         printf("Lop %s - tong so: %d hoc vien\n", BangThongKe[i].MaLop, BangThongKe[i].TongSo);
+        InDongPhanCach(38);
         printf("%-12s %-10s %s\n", "Xep loai", "So luong", "Ty le");
-        printf("----------------------------------\n");
+        InDongPhanCach(38);
 
         for (int j = 0; j < SO_LOAI_HOC_TAP; j++) {
             float TyLe = BangThongKe[i].SoLuongTheoLoai[j] * 100.0f / BangThongKe[i].TongSo;
             printf("%-12s %-10d %.2f%%\n", TenLoai[j], BangThongKe[i].SoLuongTheoLoai[j], TyLe);
         }
+        InDongPhanCach(38);
         printf("\n");
     }
 
@@ -115,14 +120,16 @@ void XuLiMenuThongKeTopSV(HocVien DSHV[], int SLHV)
         Tam[i] = DSHV[i];
     }
     float top;
-    InTieuDe("M5_THONG KE_ SO SV THEO MUC DIEM:");
-    printf("Nhap muc diem can thong ke :  ");
+    InTieuDe("M5. THONG KE - SINH VIEN THEO MUC DIEM");
+    InNhanMuc("NHAP DIEU KIEN");
+    printf("Nhap muc diem can thong ke: ");
     
     if (NhapDiemHopLe(&top) == 0) return;
     
     SapXepChon(Tam, SLHV, KHOA_DIEM_TBTL);
     int j = 1;
-    printf("\n\n\n");
+    printf("\n");
+    InNhanMuc("KET QUA");
     for (int i = SLHV-1; i >=0 ; i--)
     {
         if (Tam[i].DiemTrungBinhTichLuy >= top)
@@ -132,5 +139,7 @@ void XuLiMenuThongKeTopSV(HocVien DSHV[], int SLHV)
         }
         
     }
+    if (j == 1)
+        InThongBaoGhiChu("Khong co hoc vien nao dat muc diem da nhap.");
 
 }

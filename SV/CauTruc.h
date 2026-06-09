@@ -60,6 +60,11 @@ void   DatMauMacDinh();
 void   GotoXY(int X, int Y);
 void   XoaManHinh();
 void   InTieuDe(const char* TieuDe);
+void   InDongPhanCach(int DoDai);
+void   InNhanMuc(const char* NoiDung);
+void   InThongBaoThanhCong(const char* NoiDung);
+void   InThongBaoLoi(const char* NoiDung);
+void   InThongBaoGhiChu(const char* NoiDung);
 void   ChoPhimEscQuayLai();
 int    ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* ThongTinBoSung, int* ViTriLuuVet);
 
@@ -72,7 +77,7 @@ int    NhapDiemHopLe(float* Diem);
 int    XacNhanThemHocVien();
 int    LaNamNhuan(int Nam);
 int    KiemTraNgayThangNamHopLe(Date NgaySinh);
-int KiemTraDiemHopLe(const char* ChuoiDiem, float* Diem);
+int    KiemTraDiemHopLe(const char* ChuoiDiem, float* Diem);
 void   InNgaySinh(Date NgaySinh);
 void   InMotHocVien(HocVien HV, int STT);
 void   InBangHocVien(HocVien DanhSach[], int SoLuong);
@@ -119,5 +124,5 @@ void   XuLyMenuThongKe(const char* TenTep);
 // ============================================================
 void   ThongKeSoLuongTheoLop(HocVien DanhSach[], int SoLuong);
 void   ThongKeXepLoaiTheoLop(HocVien DanhSach[], int SoLuong);
-void XuLiMenuThongKeTopSV(HocVien DSHV[], int SLHV);
+void   XuLiMenuThongKeTopSV(HocVien DSHV[], int SLHV);
 #endif
