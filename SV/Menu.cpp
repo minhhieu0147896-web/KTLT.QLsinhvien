@@ -555,17 +555,20 @@ void XuLyMenuThongKe(const char* TenTep) {
         HocVien DanhSachHocVien[SoLuongHocVienToiDa];
         int SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
 
-        const char* MenuTK[] = { "1. So luong sinh vien theo lop", "2. Ty le xep loai hoc tap theo lop" };
+        const char* MenuTK[] = { "1. So luong sinh vien theo lop", "2. Ty le xep loai hoc tap theo lop","3. SL sinh vien theo diem."};
         InTieuDe("M5. THONG KE");
         printf("  So hoc vien hien co trong file: %d\n", SoLuongHocVien);
-        int Chon = ChonMenu(7, MenuTK, 2, NULL, &ViTriMenuThongKe);
+        int Chon = ChonMenu(7, MenuTK, 3, NULL, &ViTriMenuThongKe);
         if (Chon <= 0) return;
 
         InTieuDe("M5. THONG KE");
         if (Chon == 1)
             ThongKeSoLuongTheoLop(DanhSachHocVien, SoLuongHocVien);
-        else
+        else if (Chon == 2)
             ThongKeXepLoaiTheoLop(DanhSachHocVien, SoLuongHocVien);
+        else XuLiMenuThongKeTopSV(DanhSachHocVien, SoLuongHocVien);
+        
+
         ChoPhimEscQuayLai();
     }
 }

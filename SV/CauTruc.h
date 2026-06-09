@@ -72,7 +72,7 @@ int    NhapDiemHopLe(float* Diem);
 int    XacNhanThemHocVien();
 int    LaNamNhuan(int Nam);
 int    KiemTraNgayThangNamHopLe(Date NgaySinh);
-
+int KiemTraDiemHopLe(const char* ChuoiDiem, float* Diem);
 void   InNgaySinh(Date NgaySinh);
 void   InMotHocVien(HocVien HV, int STT);
 void   InBangHocVien(HocVien DanhSach[], int SoLuong);
@@ -119,5 +119,5 @@ void   XuLyMenuThongKe(const char* TenTep);
 // ============================================================
 void   ThongKeSoLuongTheoLop(HocVien DanhSach[], int SoLuong);
 void   ThongKeXepLoaiTheoLop(HocVien DanhSach[], int SoLuong);
-
+void XuLiMenuThongKeTopSV(HocVien DSHV[], int SLHV);
 #endif

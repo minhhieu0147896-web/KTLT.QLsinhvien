@@ -169,19 +169,6 @@ int ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* 
     }
 }
 
-// Sao chep chuoi, khong de tran bo dem dich
-void SaoChepChuoi(char* ChuoiDich, size_t KichThuocChuoiDich, const char* ChuoiNguon) {
-    size_t i = 0;
-
-    if (KichThuocChuoiDich == 0) return;
-
-    while (ChuoiNguon[i] != '\0' && i < KichThuocChuoiDich - 1) {
-        ChuoiDich[i] = ChuoiNguon[i];
-        i++;
-    }
-    ChuoiDich[i] = '\0';
-}
-
 // Nhap chuoi ky tu, ho tro Backspace va ESC de huy bo
 int NhapDongCoEsc(const char* Nhan, char* BoDem, int KichThuoc) {
     int DoDai = 0;

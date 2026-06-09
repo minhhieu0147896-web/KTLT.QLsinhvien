@@ -4,38 +4,6 @@
 
 #include "CauTruc.h"
 
-static int DocSoTuChuoi(const char* Chuoi, int* ViTri, int* GiaTri) {
-    int CoChuSo = 0;
-    int KetQua = 0;
-
-    while (isdigit((unsigned char)Chuoi[*ViTri])) {
-        CoChuSo = 1;
-        KetQua = KetQua * 10 + (Chuoi[*ViTri] - '0');
-        (*ViTri)++;
-    }
-
-    if (!CoChuSo) return 0;
-    *GiaTri = KetQua;
-    return 1;
-}
-
-static int ChuyenChuoiThanhNgay(const char* Chuoi, int* Ngay, int* Thang, int* Nam) {
-    int ViTri = 0;
-
-    if (!DocSoTuChuoi(Chuoi, &ViTri, Ngay)) return 0;
-    if (Chuoi[ViTri] != '/') return 0;
-    ViTri++;
-
-    if (!DocSoTuChuoi(Chuoi, &ViTri, Thang)) return 0;
-    if (Chuoi[ViTri] != '/') return 0;
-    ViTri++;
-
-    if (!DocSoTuChuoi(Chuoi, &ViTri, Nam)) return 0;
-    if (Chuoi[ViTri] != '\0') return 0;
-
-    return 1;
-}
-
 static int ChuyenChuoiThanhDiem(const char* Chuoi, float* Diem) {
     int i = 0;
     int CoChuSo = 0;
@@ -81,7 +49,7 @@ static int SoSanhDiem(float A, float B) {
 
 // So sanh 1 hoc vien voi gia tri can tim.
 // - Ma lop, ma hoc vien, ho ten: khop neu co chua chuoi can tim, khong phan biet hoa/thuong.
-// - Ngay sinh, diem: so sanh dung gia tri.
+// - Diem: so sanh dung gia tri.
 // Tra ve 0 neu khop.
 static int SoSanhTimKiem(HocVien HV, const char* GiaTri, int Khoa) {
     const char* ChuoiTrongDanhSach = NULL;
@@ -112,15 +80,6 @@ static int SoSanhTimKiem(HocVien HV, const char* GiaTri, int Khoa) {
         }
 
         return 1;
-    case KHOA_NGAY_SINH: {
-        int d, m, y;
-        Date NgayCanTim;
-        if (!ChuyenChuoiThanhNgay(GiaTri, &d, &m, &y)) return -1;
-        NgayCanTim.Ngay = d;
-        NgayCanTim.Thang = m;
-        NgayCanTim.Nam = y;
-        return SoSanhNgaySinh(HV.NgaySinh, NgayCanTim);
-    }
     case KHOA_DIEM_TBTL: {
         float d;
         if (!ChuyenChuoiThanhDiem(GiaTri, &d)) return -1;

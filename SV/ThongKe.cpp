@@ -104,4 +104,33 @@ void ThongKeXepLoaiTheoLop(HocVien DanhSach[], int SoLuong) {
         }
         printf("\n");
     }
+
+    
+}
+void XuLiMenuThongKeTopSV(HocVien DSHV[], int SLHV)
+{
+    HocVien Tam[SoLuongHocVienToiDa];
+    for (int i = 0; i < SLHV; i++)
+    {
+        Tam[i] = DSHV[i];
+    }
+    float top;
+    InTieuDe("M5_THONG KE_ SO SV THEO MUC DIEM:");
+    printf("Nhap muc diem can thong ke :  ");
+    
+    if (NhapDiemHopLe(&top) == 0) return;
+    
+    SapXepChon(Tam, SLHV, KHOA_DIEM_TBTL);
+    int j = 1;
+    printf("\n\n\n");
+    for (int i = SLHV-1; i >=0 ; i--)
+    {
+        if (Tam[i].DiemTrungBinhTichLuy >= top)
+        {
+            InMotHocVien(Tam[i], j);
+            j++;
+        }
+        
+    }
+
 }
