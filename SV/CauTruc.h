@@ -18,7 +18,7 @@
 #define SoKyTuToiDaMaLop       20
 #define SoKyTuToiDaMaHocVien   20
 #define SoKyTuToiDaHoTen       100
-#define SoLuongHocVienToiDa    200
+#define SoLuongHocVienToiDa    1500
 
 // Mau sac
 #define MAU_MAC_DINH      7

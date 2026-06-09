@@ -154,9 +154,15 @@ int ChonMenu(int DongBatDau, const char* CacLuaChon[], int SoLuong, const char* 
             int ViTriCu = ViTriDangChon;
 
             if (PhimMuiTen == PHIM_LEN)
+            {
+               
                 ViTriDangChon = (ViTriDangChon - 1 + SoLuong) % SoLuong;
+            }
             else if (PhimMuiTen == PHIM_XUONG)
+            {
+            
                 ViTriDangChon = (ViTriDangChon + 1) % SoLuong;
+            }
 
             CapNhatDongDangChon(DongBatDau, CacLuaChon, ViTriCu, ViTriDangChon);
         }
@@ -305,12 +311,17 @@ int NhapNgaySinhHopLe(Date* NgaySinh) {
     }
 }
 
-// Kiem tra ma HV co dung dinh dang: 2024xxx (7 ky tu, xxx tu 001-999)
+// Kiem tra ma HV co dung dinh dang: yyyyxxx (nam 2024-2026, xxx tu 001-999)
 int KiemTraMaHocVienHopLe(const char* MaHocVien) {
     if (strlen(MaHocVien) != 7) return 0;
-    if (strncmp(MaHocVien, "2024", 4) != 0) return 0;
-    if (!isdigit((unsigned char)MaHocVien[4]) || !isdigit((unsigned char)MaHocVien[5]) || !isdigit((unsigned char)MaHocVien[6]))
+    for (int i = 0; i < 7; i++)
+        if (!isdigit((unsigned char)MaHocVien[i]))
+            return 0;
+
+    int Nam = atoi(MaHocVien) / 1000;
+    if (Nam < 2024 || Nam > 2026)
         return 0;
+
     int SoThuTu = atoi(MaHocVien + 4);
     return SoThuTu >= 1 && SoThuTu <= 999;
 }
@@ -325,9 +336,9 @@ int KiemTraTrungMaHocVien(HocVien DanhSachHocVien[], int SoLuongHocVien, const c
 // Nhap ma HV, kiem tra hop le + khong trung, cho phep ESC huy
 int NhapMaHocVienHopLe(char* MaHocVien, int KichThuoc, HocVien DanhSachHocVien[], int SoLuongHocVien) {
     while (1) {
-        if (!NhapDongCoEsc("Ma hoc vien (2024001-2024999): ", MaHocVien, KichThuoc)) return 0;
+        if (!NhapDongCoEsc("Ma hoc vien (2024001-2026999): ", MaHocVien, KichThuoc)) return 0;
         if (!KiemTraMaHocVienHopLe(MaHocVien)) {
-            printf("Ma hoc vien phai co dang 2024***, trong do *** tu 001 den 999.\n"); continue;
+            printf("Ma hoc vien phai co dang yyyyxxx, nam 2024-2026 va xxx tu 001 den 999.\n"); continue;
         }
         if (KiemTraTrungMaHocVien(DanhSachHocVien, SoLuongHocVien, MaHocVien)) {
             printf("Ma hoc vien da ton tai. Vui long nhap ma khac.\n"); continue;
