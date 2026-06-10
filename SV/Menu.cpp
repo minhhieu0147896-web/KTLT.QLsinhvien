@@ -244,7 +244,7 @@ void XuLyMenuInDanhSach(const char* TenTep) {
     int ViTriMenuIn = 0;
 
     while (1) {
-        HocVien DanhSachHocVien[SoLuongHocVienToiDa];
+        HocVien DanhSachHocVien[SoLuongHocVienToiDa], Tam[SoLuongHocVienToiDa];
         int SoLuongHocVien = DocDanhSachTuFile(TenTep, DanhSachHocVien, SoLuongHocVienToiDa);
 
         const char* MenuIn[] = {
@@ -264,21 +264,34 @@ void XuLyMenuInDanhSach(const char* TenTep) {
         if (Chon == 2) {
             char MaLopCanIn[SoKyTuToiDaMaLop];
             int SoLuongTimThay = 0;
-
+            bool checkmalop = false;
             InTieuDe("M2. IN DANH SACH THEO LOP");
             if (!NhapDongCoEsc("Nhap ma lop: ", MaLopCanIn, sizeof(MaLopCanIn))) continue;
 
-            InDongPhanCach(79);
-            printf("%-5s %-10s %-12s %-28s %-12s %s\n", "STT", "Ma lop", "Ma HV", "Ho ten", "Ngay sinh", "Diem");
-            InDongPhanCach(79);
+            
             for (int i = 0; i < SoLuongHocVien; i++)
                 if (strcmp(DanhSachHocVien[i].MaLop, MaLopCanIn) == 0) {
-                    SoLuongTimThay++;
-                    InMotHocVien(DanhSachHocVien[i], SoLuongTimThay);
+                    Tam[SoLuongTimThay] = DanhSachHocVien[i];
+                    SoLuongTimThay++;  
+                    checkmalop = true;
                 }
+
+            
+
             InDongPhanCach(79);
-            if (SoLuongTimThay == 0) InThongBaoGhiChu("Khong co hoc vien nao thuoc lop da nhap.");
-            ChoPhimEscQuayLai();
+           
+            if (checkmalop == false) { 
+                InThongBaoLoi("Khong tim thay lop hoc");
+                ChoPhimEscQuayLai();
+                continue;
+            }
+            if (SoLuongTimThay == 0)
+            {
+                InThongBaoGhiChu("Khong co hoc vien nao thuoc lop da nhap.");
+                ChoPhimEscQuayLai(); continue;
+            }           
+            InBangHocVien(Tam, SoLuongTimThay);
+            
         }
     }
 }

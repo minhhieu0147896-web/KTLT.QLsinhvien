@@ -109,6 +109,9 @@ void ChoPhimEscQuayLai(void) {
 #define PHIM_LEN         72
 #define PHIM_XUONG       80
 #define CHIEU_RONG_MENU  48
+#define PHIM_TRAI    75
+#define PHIM_PHAI    77
+#define SO_DONG_MOI_TRANG 20
 
 static void InDongMenu(int Dong, const char* NoiDung, int DangDuocChon) {
     GotoXY(0, Dong);
@@ -416,12 +419,45 @@ void InBangHocVien(HocVien DanhSachHocVien[], int SoLuongHocVien) {
         return;
     }
 
-    InDongPhanCach(79);
-    printf("%-5s %-10s %-12s %-28s %-12s %s\n", "STT", "Ma lop", "Ma HV", "Ho ten", "Ngay sinh", "Diem");
-    InDongPhanCach(79);
-    for (int ViTri = 0; ViTri < SoLuongHocVien; ViTri++)
-        InMotHocVien(DanhSachHocVien[ViTri], ViTri + 1);
-    InDongPhanCach(79);
+    int TongSoTrang = (SoLuongHocVien + SO_DONG_MOI_TRANG - 1) / SO_DONG_MOI_TRANG;
+    int TrangHienTai = 0;
+
+    while (1) {
+        int BatDau = TrangHienTai * SO_DONG_MOI_TRANG;
+        int KetThuc = BatDau + SO_DONG_MOI_TRANG;
+
+        if (KetThuc > SoLuongHocVien)
+            KetThuc = SoLuongHocVien;
+
+        InDongPhanCach(79);
+        printf("%-5s %-10s %-12s %-28s %-12s %s\n",
+            "STT", "Ma lop", "Ma HV", "Ho ten", "Ngay sinh", "Diem");
+        InDongPhanCach(79);
+
+        for (int ViTri = BatDau; ViTri < KetThuc; ViTri++)
+            InMotHocVien(DanhSachHocVien[ViTri], ViTri + 1);
+
+        InDongPhanCach(79);
+        printf("Trang %d/%d | <- Trang truoc | -> Trang sau | ESC thoat che do xem trang \n",
+            TrangHienTai + 1, TongSoTrang);
+
+        int Phim = _getch();
+
+        if (Phim == 27)
+            return;
+
+        if (Phim == PHIM_MUI_TEN) {
+            int PhimMuiTen = _getch();
+
+            if (PhimMuiTen == PHIM_PHAI && TrangHienTai < TongSoTrang - 1)
+                TrangHienTai++;
+
+            if (PhimMuiTen == PHIM_TRAI && TrangHienTai > 0)
+                TrangHienTai--;
+        }
+
+        InTieuDe("DANH SACH HOC VIEN");
+    }
 }
 
 // Xac nhan luu hoc vien: ENTER de luu, ESC de huy
