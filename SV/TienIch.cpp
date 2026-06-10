@@ -111,7 +111,7 @@ void ChoPhimEscQuayLai(void) {
 #define CHIEU_RONG_MENU  48
 #define PHIM_TRAI    75
 #define PHIM_PHAI    77
-#define SO_DONG_MOI_TRANG 20
+#define SO_DONG_MOI_TRANG 15
 
 void InDongMenu(int Dong, const char* NoiDung, int DangDuocChon) {
     GotoXY(0, Dong);
@@ -478,10 +478,10 @@ void VeFormThemHocVien(HocVien HV, int ViTriChon)
 
     const char* MuiTen;
 
-    MuiTen = (ViTriChon == TRUONG_MA_LOP) ? ">" : " ";
+    MuiTen = (ViTriChon == TRUONG_MA_LOP) ? "--" : " ";
     printf("%s Ma lop      : %s\n", MuiTen, HV.MaLop);
 
-    MuiTen = (ViTriChon == TRUONG_MA_HV) ? ">" : " ";
+    MuiTen = (ViTriChon == TRUONG_MA_HV) ? "--" : " ";
     printf("%s Ma hoc vien : %s\n", MuiTen, HV.MaHocVien);
 
     MuiTen = (ViTriChon == TRUONG_HO_TEN) ? ">" : " ";
