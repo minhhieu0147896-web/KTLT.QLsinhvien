@@ -4,7 +4,7 @@
 
 #include "CauTruc.h"
 
-static int ChuyenChuoiThanhDiem(const char* Chuoi, float* Diem) {
+int ChuyenChuoiThanhDiem(const char* Chuoi, float* Diem) {
     int i = 0;
     int CoChuSo = 0;
     int CoDauCham = 0;
@@ -41,7 +41,7 @@ int SoSanhNgaySinh(Date A, Date B) {
     return 0;
 }
 
-static int SoSanhDiem(float A, float B) {
+int SoSanhDiem(float A, float B) {
     if (A < B) return -1;
     if (A > B) return 1;
     return 0;
@@ -51,7 +51,7 @@ static int SoSanhDiem(float A, float B) {
 // - Ma lop, ma hoc vien, ho ten: khop neu co chua chuoi can tim, khong phan biet hoa/thuong.
 // - Diem: so sanh dung gia tri.
 // Tra ve 0 neu khop.
-static int SoSanhTimKiem(HocVien HV, const char* GiaTri, int Khoa) {
+int SoSanhTimKiem(HocVien HV, const char* GiaTri, int Khoa) {
     const char* ChuoiTrongDanhSach = NULL;
 
     switch (Khoa) {

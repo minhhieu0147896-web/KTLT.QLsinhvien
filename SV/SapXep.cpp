@@ -1,5 +1,5 @@
 // ============================================================
-// SapXep.cpp - 4 thuat toan sap xep: Chon, Chen, Quicksort, Mergesort
+// SapXep.cpp - 3 thuat toan sap xep: Chon, Chen, Noi bot
 // ============================================================
 
 #include "CauTruc.h"
@@ -43,48 +43,13 @@ void SapXepChen(HocVien DanhSach[], int SoLuong, int Khoa) {
     }
 }
 
-// Quicksort: chon chot -> phan hoach -> de quy 2 ben
-void SapXepNhanh(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
-    if (Trai >= Phai) return;
-    HocVien Chot = DanhSach[Phai];
-    int i = Trai - 1;
-    for (int j = Trai; j < Phai; j++)
-        if (SoSanhHocVien(DanhSach[j], Chot, Khoa)) { i++; HocVien T = DanhSach[i]; DanhSach[i] = DanhSach[j]; DanhSach[j] = T; }
-    HocVien T = DanhSach[i + 1]; DanhSach[i + 1] = DanhSach[Phai]; DanhSach[Phai] = T;
-    int ViTriChot = i + 1;
-    SapXepNhanh(DanhSach, Trai, ViTriChot - 1, Khoa);
-    SapXepNhanh(DanhSach, ViTriChot + 1, Phai, Khoa);
-}
-
-// Mergesort: chia doi -> de quy -> tron
-static void Tron(HocVien DanhSach[], int Trai, int Giua, int Phai, int Khoa) {
-    int n1 = Giua - Trai + 1, n2 = Phai - Giua;
-    HocVien* L = (HocVien*)malloc(n1 * sizeof(HocVien));
-    HocVien* R = (HocVien*)malloc(n2 * sizeof(HocVien));
-    if (!L || !R) { if (L) free(L); if (R) free(R); return; }
-    for (int i = 0; i < n1; i++) L[i] = DanhSach[Trai + i];
-    for (int j = 0; j < n2; j++) R[j] = DanhSach[Giua + 1 + j];
-    int i = 0, j = 0, k = Trai;
-    while (i < n1 && j < n2) {
-        if (SoSanhHocVien(L[i], R[j], Khoa)) {
-            DanhSach[k] = L[i];
-            i++;
-        } else {
-            DanhSach[k] = R[j];
-            j++;
-        }
-        k++;
-    }
-    while (i < n1) DanhSach[k++] = L[i++];
-    while (j < n2) DanhSach[k++] = R[j++];
-    free(L); free(R);
-}
-
-void SapXepTron(HocVien DanhSach[], int Trai, int Phai, int Khoa) {
-    if (Trai < Phai) {
-        int Giua = Trai + (Phai - Trai) / 2;
-        SapXepTron(DanhSach, Trai, Giua, Khoa);
-        SapXepTron(DanhSach, Giua + 1, Phai, Khoa);
-        Tron(DanhSach, Trai, Giua, Phai, Khoa);
-    }
+// Sap xep noi bot: duyet tu dau den cuoi, doi cho cac cap ke nhau sai thu tu
+void SapXepNoiBot(HocVien DanhSach[], int SoLuong, int Khoa) {
+    for (int i = 0; i < SoLuong - 1; i++)
+        for (int j = 0; j < SoLuong - i - 1; j++)
+            if (SoSanhHocVien(DanhSach[j + 1], DanhSach[j], Khoa)) {
+                HocVien T = DanhSach[j];
+                DanhSach[j] = DanhSach[j + 1];
+                DanhSach[j + 1] = T;
+            }
 }

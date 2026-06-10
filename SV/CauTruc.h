@@ -51,6 +51,14 @@ typedef enum {
     KHOA_DIEM_TBTL
 } KhoaHocVien;
 
+typedef enum {
+    TRUONG_MA_LOP,
+    TRUONG_MA_HV,
+    TRUONG_HO_TEN,
+    TRUONG_NGAY_SINH,
+    TRUONG_DIEM,
+    TRUONG_LUU
+} TruongNhapHocVien;
 // ============================================================
 // TIEN ICH (TienIch.cpp)
 // ============================================================
@@ -82,6 +90,9 @@ void   InNgaySinh(Date NgaySinh);
 void   InMotHocVien(HocVien HV, int STT);
 void   InBangHocVien(HocVien DanhSach[], int SoLuong);
 
+void VeFormThemHocVien(HocVien HV, int ViTriChon);
+int DuLieuHopLe(HocVien HV);
+
 // ============================================================
 // DU LIEU (DuLieu.cpp)
 // ============================================================
@@ -89,13 +100,12 @@ int    DocDanhSachTuFile(const char* TenTep, HocVien DanhSach[], int ToiDa);
 int    GhiDanhSachVaoFile(const char* TenTep, HocVien DanhSach[], int SoLuong);
 
 // ============================================================
-// SAP XEP (SapXep.cpp) - 4 thuat toan
+// SAP XEP (SapXep.cpp) - 3 thuat toan
 // ============================================================
 int    SoSanhHocVien(HocVien A, HocVien B, int Khoa);
 void   SapXepChon(HocVien DanhSach[], int SoLuong, int Khoa);
 void   SapXepChen(HocVien DanhSach[], int SoLuong, int Khoa);
-void   SapXepNhanh(HocVien DanhSach[], int Trai, int Phai, int Khoa);
-void   SapXepTron(HocVien DanhSach[], int Trai, int Phai, int Khoa);
+void   SapXepNoiBot(HocVien DanhSach[], int SoLuong, int Khoa);
 
 // ============================================================
 // TIM KIEM (TimKiem.cpp) - 2 thuat toan

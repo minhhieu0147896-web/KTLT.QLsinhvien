@@ -50,18 +50,83 @@ static void XuLyThemMoiHoSo(const char* TenTep) {
 
     InTieuDe("M1. THEM MOI HO SO");
     InNhanMuc("NHAP THONG TIN");
-    InThongBaoGhiChu("Nhan ESC tai bat ky truong nao de huy va quay lai.");
-    printf("\n");
+    int ViTriChon = TRUONG_MA_LOP;
 
-    if (!NhapDongCoEsc("Ma lop                : ", HocVienTam.MaLop, sizeof(HocVienTam.MaLop))) return;
-    if (!NhapMaHocVienHopLe(HocVienTam.MaHocVien, sizeof(HocVienTam.MaHocVien), DanhSachHocVien, SoLuongHocVien)) return;
-    if (!NhapHoTenChuanHoa("Ho va ten             : ", HocVienTam.HoTen, sizeof(HocVienTam.HoTen))) return;
-    if (!NhapNgaySinhHopLe(&HocVienTam.NgaySinh)) return;
-    if (!NhapDiemHopLe(&HocVienTam.DiemTrungBinhTichLuy)) return;
+    while (1)
+    {
+        VeFormThemHocVien(HocVienTam, ViTriChon);
 
-    printf("\n");
-    InNhanMuc("THONG TIN VUA NHAP");
-    InThongTinHocVienChiTiet(HocVienTam);
+        int Phim = _getch();
+
+        if (Phim == 27)
+            return;
+
+        if (Phim == 224)
+        {
+            Phim = _getch();
+
+            if (Phim == 72)
+            {
+                if (ViTriChon > 0)
+                    ViTriChon--;
+            }
+
+            if (Phim == 80)
+            {
+                if (ViTriChon < TRUONG_LUU)
+                    ViTriChon++;
+            }
+        }
+
+        if (Phim == 13)
+        {
+            switch (ViTriChon)
+            {
+            case TRUONG_MA_LOP:
+                NhapDongCoEsc("Ma lop: ",HocVienTam.MaLop,sizeof(HocVienTam.MaLop));
+                break;
+
+            case TRUONG_MA_HV:
+                NhapMaHocVienHopLe(HocVienTam.MaHocVien,sizeof(HocVienTam.MaHocVien),DanhSachHocVien,SoLuongHocVien);
+                break;
+
+            case TRUONG_HO_TEN:
+                NhapHoTenChuanHoa("Ho va ten: ",HocVienTam.HoTen,sizeof(HocVienTam.HoTen));
+                break;
+
+            case TRUONG_NGAY_SINH:
+                NhapNgaySinhHopLe(&HocVienTam.NgaySinh);
+                break;
+
+            case TRUONG_DIEM:
+                NhapDiemHopLe(&HocVienTam.DiemTrungBinhTichLuy);
+                break;
+
+            case TRUONG_LUU:
+            {
+                if (!DuLieuHopLe(HocVienTam))
+                {
+                    InThongBaoLoi("Con truong chua nhap.");
+                    _getch();
+                    break;
+                }
+                
+
+                DanhSachHocVien[SoLuongHocVien]
+                    = HocVienTam;
+
+                SoLuongHocVien++;
+
+                GhiDanhSachVaoFile(TenTep,DanhSachHocVien,SoLuongHocVien);
+
+                InThongBaoThanhCong("Da them hoc vien.");
+
+                ChoPhimEscQuayLai();
+                return;
+            }
+            }
+        }
+    }
 
     if (!XacNhanThemHocVien()) return;
 
@@ -313,14 +378,14 @@ void XuLyMenuSapXep(const char* TenTep) {
         }
 
         // Menu cap 1: chon thuat toan
-        const char* MenuThuatToan[] = { "1. Sap xep chon", "2. Sap xep chen", "3. Quicksort", "4. Mergesort" };
+        const char* MenuThuatToan[] = { "1. Sap xep chon", "2. Sap xep chen", "3. Sap xep noi bot" };
         InTieuDe("M3. SAP XEP");
         printf("  So hoc vien hien co trong file: %d\n", SoLuongHocVien);
-        int ChonTT = ChonMenu(7, MenuThuatToan, 4, NULL, &ViTriMenuThuatToan);
+        int ChonTT = ChonMenu(7, MenuThuatToan, 3, NULL, &ViTriMenuThuatToan);
         if (ChonTT <= 0) return;
 
         // Menu cap 2: chon khoa
-        const char* TenTT[] = { "Sap xep chon", "Sap xep chen", "Quicksort", "Mergesort" };
+        const char* TenTT[] = { "Sap xep chon", "Sap xep chen", "Sap xep noi bot" };
         const char* TenKhoaArr[] = { "Ma hoc vien", "Ho va ten", "Ngay sinh", "Diem TBTL" };
         const char* MenuKhoa[] = { "1. Ma hoc vien", "2. Ho va ten", "3. Ngay sinh", "4. Diem trung binh tich luy" };
         int ViTriTT = ChonTT - 1;
@@ -340,8 +405,7 @@ void XuLyMenuSapXep(const char* TenTep) {
         switch (ChonTT) {
         case 1: SapXepChon(DanhSachHocVien, SoLuongHocVien, KhoaKey); break;
         case 2: SapXepChen(DanhSachHocVien, SoLuongHocVien, KhoaKey); break;
-        case 3: SapXepNhanh(DanhSachHocVien, 0, SoLuongHocVien - 1, KhoaKey); break;
-        case 4: SapXepTron(DanhSachHocVien, 0, SoLuongHocVien - 1, KhoaKey); break;
+        case 3: SapXepNoiBot(DanhSachHocVien, SoLuongHocVien, KhoaKey); break;
         }
 
         InThongBaoThanhCong("Da sap xep xong!");

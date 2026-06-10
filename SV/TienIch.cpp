@@ -113,7 +113,7 @@ void ChoPhimEscQuayLai(void) {
 #define PHIM_PHAI    77
 #define SO_DONG_MOI_TRANG 20
 
-static void InDongMenu(int Dong, const char* NoiDung, int DangDuocChon) {
+void InDongMenu(int Dong, const char* NoiDung, int DangDuocChon) {
     GotoXY(0, Dong);
     if (DangDuocChon)
         DatMauSac(MAU_DONG_CHON);
@@ -122,7 +122,7 @@ static void InDongMenu(int Dong, const char* NoiDung, int DangDuocChon) {
     printf("  %-*s", CHIEU_RONG_MENU, NoiDung);
 }
 
-static void CapNhatDongDangChon(int DongBatDau, const char* CacLuaChon[],
+void CapNhatDongDangChon(int DongBatDau, const char* CacLuaChon[],
                                 int ViTriCu, int ViTriMoi) {
     if (ViTriCu == ViTriMoi) return;
 
@@ -470,4 +470,58 @@ int XacNhanThemHocVien(void) {
         if (Phim == 13) return 1;
         if (Phim == 27) return 0;
     }
+}
+
+void VeFormThemHocVien(HocVien HV, int ViTriChon)
+{
+    InTieuDe("M1. THEM MOI HOC VIEN");
+
+    const char* MuiTen;
+
+    MuiTen = (ViTriChon == TRUONG_MA_LOP) ? ">" : " ";
+    printf("%s Ma lop      : %s\n", MuiTen, HV.MaLop);
+
+    MuiTen = (ViTriChon == TRUONG_MA_HV) ? ">" : " ";
+    printf("%s Ma hoc vien : %s\n", MuiTen, HV.MaHocVien);
+
+    MuiTen = (ViTriChon == TRUONG_HO_TEN) ? ">" : " ";
+    printf("%s Ho va ten   : %s\n", MuiTen, HV.HoTen);
+
+    MuiTen = (ViTriChon == TRUONG_NGAY_SINH) ? ">" : " ";
+    printf("%s Ngay sinh   : %02d/%02d/%04d\n",
+        MuiTen,
+        HV.NgaySinh.Ngay,
+        HV.NgaySinh.Thang,
+        HV.NgaySinh.Nam);
+
+    MuiTen = (ViTriChon == TRUONG_DIEM) ? ">" : " ";
+    printf("%s Diem TBTL   : %.2f\n",
+        MuiTen,
+        HV.DiemTrungBinhTichLuy);
+
+    printf("\n");
+
+    MuiTen = (ViTriChon == TRUONG_LUU) ? ">" : " ";
+    printf("%s [ LUU ]\n", MuiTen);
+
+    printf("\n");
+    printf("Mui ten: di chuyen\n");
+    printf("Enter : sua\n");
+    printf("ESC   : huy\n");
+}
+int DuLieuHopLe(HocVien HV)
+{
+    if (strlen(HV.MaLop) == 0)
+        return 0;
+
+    if (strlen(HV.MaHocVien) == 0)
+        return 0;
+
+    if (strlen(HV.HoTen) == 0)
+        return 0;
+
+    if (HV.NgaySinh.Nam == 0)
+        return 0;
+
+    return 1;
 }

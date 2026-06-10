@@ -12,7 +12,7 @@ typedef struct {
     int SoLuongTheoLoai[SO_LOAI_HOC_TAP];
 } ThongKeLop;
 
-static void SaoChepMaLop(char MaLopDich[], const char* MaLopNguon) {
+void SaoChepMaLop(char MaLopDich[], const char* MaLopNguon) {
     int i = 0;
 
     while (MaLopNguon[i] != '\0' && i < SoKyTuToiDaMaLop - 1) {
@@ -22,14 +22,14 @@ static void SaoChepMaLop(char MaLopDich[], const char* MaLopNguon) {
     MaLopDich[i] = '\0';
 }
 
-static int TimViTriLop(ThongKeLop BangThongKe[], int SoLop, const char* MaLop) {
+int TimViTriLop(ThongKeLop BangThongKe[], int SoLop, const char* MaLop) {
     for (int i = 0; i < SoLop; i++)
         if (strcmp(BangThongKe[i].MaLop, MaLop) == 0)
             return i;
     return -1;
 }
 
-static int ThemLopNeuChuaCo(ThongKeLop BangThongKe[], int* SoLop, const char* MaLop) {
+int ThemLopNeuChuaCo(ThongKeLop BangThongKe[], int* SoLop, const char* MaLop) {
     int ViTri = TimViTriLop(BangThongKe, *SoLop, MaLop);
     if (ViTri >= 0) return ViTri;
 
@@ -43,7 +43,7 @@ static int ThemLopNeuChuaCo(ThongKeLop BangThongKe[], int* SoLop, const char* Ma
     return ViTri;
 }
 
-static int LayLoaiHocTap(float Diem) {
+int LayLoaiHocTap(float Diem) {
     if (Diem >= 3.6f) return 0; // Xuat sac
     if (Diem >= 3.2f) return 1; // Gioi
     if (Diem >= 2.5f) return 2; // Kha
@@ -51,7 +51,7 @@ static int LayLoaiHocTap(float Diem) {
     return 4;                   // Yeu
 }
 
-static void LapBangThongKeTheoLop(HocVien DanhSach[], int SoLuong,
+void LapBangThongKeTheoLop(HocVien DanhSach[], int SoLuong,
                                   ThongKeLop BangThongKe[], int* SoLop) {
     *SoLop = 0;
 
